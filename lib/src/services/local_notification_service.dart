@@ -84,7 +84,7 @@ class LocalNotificationService implements NotificationService {
   @override
   Future deleteScheduledNotification(NotificationModel notification) async {
     listOfPlannedNotifications =
-        listOfPlannedNotifications.where((n) => n != notification).toList();
+        listOfPlannedNotifications.remove((n) => n != notification).toList();
     print('Notification deleted: $notification');
   }
 

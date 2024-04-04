@@ -66,11 +66,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "0.0.1"
-      resolved-ref: "0eb6ea4c2e64b757b468e23ee2055e27e8302397"
+      ref: "0.1.0"
+      resolved-ref: "65d8e31bfba38fca8973544312b430e131853a1a"
       url: "https://github.com/Iconica-Development/flutter_animated_widgets.git"
     source: git
-    version: "0.0.1"
+    version: "0.1.0"
   flutter_lints:
     dependency: "direct dev"
     description:

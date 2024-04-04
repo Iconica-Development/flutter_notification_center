@@ -1,6 +1,7 @@
 // list_tile_theme.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animated_widgets/flutter_animated_widgets.dart';
 
 // Define a theme class for customizing ListTile appearance
 class NotificationStyle {
@@ -16,6 +17,7 @@ class NotificationStyle {
   final BoxDecoration? tileDecoration;
   final Widget Function()? emptyNotificationsBuilder;
   final TextStyle? appTitleTextStyle;
+  final AnimatedNotificationBellStyle bellStyle;
 
   const NotificationStyle({
     this.titleTextStyle,
@@ -30,5 +32,6 @@ class NotificationStyle {
     this.tileDecoration,
     this.emptyNotificationsBuilder,
     this.appTitleTextStyle,
+    this.bellStyle = const AnimatedNotificationBellStyle(),
   });
 }

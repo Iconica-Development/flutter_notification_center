@@ -51,7 +51,7 @@
     },
     {
       "name": "flutter_animated_widgets",
-      "rootUri": "file:///Users/jacquesdoeleman/.pub-cache/git/flutter_animated_widgets-0eb6ea4c2e64b757b468e23ee2055e27e8302397/",
+      "rootUri": "file:///Users/jacquesdoeleman/.pub-cache/git/flutter_animated_widgets-65d8e31bfba38fca8973544312b430e131853a1a/",
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
@@ -182,7 +182,7 @@
       "languageVersion": "3.3"
     }
   ],
-  "generated": "2024-04-04T07:46:25.501696Z",
+  "generated": "2024-04-04T14:21:58.133947Z",
   "generator": "pub",
   "generatorVersion": "3.3.3"
 }

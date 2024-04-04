@@ -39,7 +39,7 @@ class _NotificationBellState extends State<NotificationBell> {
       icon: AnimatedNotificationBell(
         duration: const Duration(seconds: 1),
         notificationCount: notificationAmount,
-        notificationIconSize: 45,
+        style: widget.config.style.bellStyle,
       ),
     );
   }
