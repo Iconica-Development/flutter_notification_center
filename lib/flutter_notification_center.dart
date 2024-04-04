@@ -8,3 +8,6 @@ export 'package:flutter_notification_center/src/services/notification_service.da
 export 'package:flutter_notification_center/src/notification_center.dart';
 export 'package:flutter_notification_center/src/models/notification.dart';
 export 'package:flutter_notification_center/src/models/notification_theme.dart';
+export 'package:flutter_notification_center/src/models/notification_config.dart';
+export 'package:flutter_notification_center/src/notification_bell.dart';
+export 'package:flutter_notification_center/src/notification_bell_story.dart';

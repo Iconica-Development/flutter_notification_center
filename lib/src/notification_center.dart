@@ -1,20 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_notification_center/src/models/notification.dart';
-import 'package:flutter_notification_center/src/models/notification_theme.dart';
-import 'package:flutter_notification_center/src/models/notification_translation.dart';
-import 'package:flutter_notification_center/src/services/notification_service.dart';
+import 'package:flutter_notification_center/flutter_notification_center.dart';
 import 'package:intl/intl.dart';
 
 class NotificationCenter extends StatefulWidget {
-  final NotificationService notificationCenterService;
-  final NotificationStyle? notificationTheme;
-  final NotificationTranslations translations;
+  final NotificationConfig config;
 
   const NotificationCenter({
     super.key,
-    required this.notificationCenterService,
-    this.notificationTheme,
-    this.translations = const NotificationTranslations(),
+    required this.config,
   });
 
   @override
@@ -27,7 +20,7 @@ class _NotificationCenterState extends State<NotificationCenter> {
   @override
   void initState() {
     super.initState();
-    listOfNotifications = widget.notificationCenterService.getNotifications();
+    listOfNotifications = widget.config.service.getNotifications();
   }
 
   @override
@@ -39,8 +32,8 @@ class _NotificationCenterState extends State<NotificationCenter> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.translations.appBarTitle,
-          style: widget.notificationTheme?.appTitleTextStyle,
+          widget.config.translations.appBarTitle,
+          style: widget.config.style.appTitleTextStyle,
         ),
         centerTitle: true,
         leading: IconButton(
@@ -51,9 +44,9 @@ class _NotificationCenterState extends State<NotificationCenter> {
         ),
       ),
       body: unreadNotifications.isEmpty
-          ? widget.notificationTheme?.emptyNotificationsBuilder?.call() ??
+          ? widget.config.style.emptyNotificationsBuilder?.call() ??
               Center(
-                child: Text(widget.translations.appBarTitle),
+                child: Text(widget.config.translations.appBarTitle),
               )
           : ListView.builder(
               itemCount: unreadNotifications.length,
@@ -62,7 +55,7 @@ class _NotificationCenterState extends State<NotificationCenter> {
                 final formattedDateTime = DateFormat('yyyy-MM-dd HH:mm')
                     .format(notification.dateTime);
                 return Container(
-                  decoration: widget.notificationTheme?.tileDecoration,
+                  decoration: widget.config.style.tileDecoration,
                   child: ListTile(
                     title: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -70,12 +63,12 @@ class _NotificationCenterState extends State<NotificationCenter> {
                       children: [
                         Text(
                           notification.title,
-                          style: widget.notificationTheme?.titleTextStyle ??
+                          style: widget.config.style.titleTextStyle ??
                               const TextStyle(),
                         ),
                         Text(
                           notification.body,
-                          style: widget.notificationTheme?.subtitleTextStyle ??
+                          style: widget.config.style.subtitleTextStyle ??
                               const TextStyle(),
                         ),
                         Text(
