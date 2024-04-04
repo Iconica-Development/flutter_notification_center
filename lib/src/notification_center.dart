@@ -6,8 +6,8 @@ class NotificationCenter extends StatefulWidget {
   final NotificationConfig config;
 
   const NotificationCenter({
-    super.key,
     required this.config,
+    super.key,
   });
 
   @override
@@ -15,20 +15,16 @@ class NotificationCenter extends StatefulWidget {
 }
 
 class _NotificationCenterState extends State<NotificationCenter> {
-  late List<NotificationModel> listOfNotifications;
+  late Future<List<NotificationModel>> _notificationsFuture;
 
   @override
   void initState() {
     super.initState();
-    listOfNotifications = widget.config.service.getNotifications();
+    _notificationsFuture = widget.config.service.getActiveNotifications();
   }
 
   @override
   Widget build(BuildContext context) {
-    final unreadNotifications = listOfNotifications
-        .where((notification) => !notification.isRead)
-        .toList();
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -43,55 +39,80 @@ class _NotificationCenterState extends State<NotificationCenter> {
           },
         ),
       ),
-      body: unreadNotifications.isEmpty
-          ? widget.config.style.emptyNotificationsBuilder?.call() ??
-              Center(
-                child: Text(widget.config.translations.appBarTitle),
-              )
-          : ListView.builder(
+      body: FutureBuilder<List<NotificationModel>>(
+        future: _notificationsFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (snapshot.data == null || snapshot.data!.isEmpty) {
+            return const Center(
+                child: Text('No unread notifications available.'));
+          } else {
+            final unreadNotifications = snapshot.data!.toList();
+
+            return ListView.builder(
               itemCount: unreadNotifications.length,
               itemBuilder: (context, index) {
                 final notification = unreadNotifications[index];
-                final formattedDateTime = DateFormat('yyyy-MM-dd HH:mm')
-                    .format(notification.dateTime);
-                return Container(
-                  decoration: widget.config.style.tileDecoration,
-                  child: ListTile(
-                    title: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          notification.title,
-                          style: widget.config.style.titleTextStyle ??
-                              const TextStyle(),
+                final formattedDateTime = notification.dateTimePushed != null
+                    ? DateFormat('yyyy-MM-dd HH:mm')
+                        .format(notification.dateTimePushed!)
+                    : 'Pending';
+                return ListTile(
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        notification.title,
+                        style: widget.config.style.titleTextStyle ??
+                            const TextStyle(),
+                      ),
+                      Text(
+                        notification.body,
+                        style: widget.config.style.subtitleTextStyle ??
+                            const TextStyle(),
+                      ),
+                      Text(
+                        formattedDateTime,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
                         ),
-                        Text(
-                          notification.body,
-                          style: widget.config.style.subtitleTextStyle ??
-                              const TextStyle(),
-                        ),
-                        Text(
-                          formattedDateTime,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () {
-                        setState(() {
-                          notification.isRead = true;
-                        });
-                      },
-                    ),
+                      ),
+                    ],
+                  ),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      setState(() {
+                        widget.config.service
+                            .dismissActiveNotification(notification);
+                        print('Notification dismissed: $notification');
+                      });
+                    },
                   ),
                 );
               },
-            ),
+            );
+          }
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          await widget.config.service.createRecurringNotification(
+            NotificationModel(
+                id: 3,
+                title: 'HALLO',
+                body: 'DIT IS DE BODY',
+                recurring: true,
+                occuringInterval: OcurringInterval.debug,
+                scheduledFor: DateTime.now().add(const Duration(seconds: 5))),
+          );
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }

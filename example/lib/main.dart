@@ -18,32 +18,31 @@ class NotificationCenterDemo extends StatefulWidget {
 
 class _NotificationCenterDemoState extends State<NotificationCenterDemo> {
   var config = NotificationConfig(
-    service: NotificationService(
-      listOfNotifications: [
+    service: LocalNotificationService(
+      listOfActiveNotifications: [
         NotificationModel(
+          id: 1,
           title: 'Notification title 1',
           body: 'Notification body 1',
-          dateTime: DateTime.now(),
-          isRead: false,
+          dateTimePushed: DateTime.now(),
         ),
         NotificationModel(
+          id: 2,
           title: 'RECURRING',
           body: 'RECURRING',
-          dateTime: DateTime.now(),
-          isRead: false,
-          isScheduled: true,
+          dateTimePushed: DateTime.now(),
         ),
         NotificationModel(
+          id: 3,
           title: 'Notification title 2',
           body: 'Notification body 2',
-          dateTime: DateTime.now(),
-          isRead: false,
+          dateTimePushed: DateTime.now(),
         ),
         NotificationModel(
+          id: 4,
           title: 'Notification title 3',
           body: 'Notification body 3',
-          dateTime: DateTime.now(),
-          isRead: false,
+          dateTimePushed: DateTime.now(),
         ),
       ],
     ),

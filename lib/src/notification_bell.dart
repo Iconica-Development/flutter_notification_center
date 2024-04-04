@@ -17,13 +17,28 @@ class NotificationBell extends StatefulWidget {
 }
 
 class _NotificationBellState extends State<NotificationBell> {
+  var notificationAmount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      var amount = await widget.config.service.getActiveNotifications();
+
+      setState(() {
+        notificationAmount = amount.length;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: widget.onTap,
       icon: AnimatedNotificationBell(
         duration: const Duration(seconds: 1),
-        notificationCount: widget.config.service.listOfNotifications.length,
+        notificationCount: notificationAmount,
         notificationIconSize: 45,
       ),
     );
