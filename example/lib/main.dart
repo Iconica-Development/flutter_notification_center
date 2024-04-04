@@ -21,31 +21,19 @@ class NotificationCenterDemo extends StatelessWidget {
         ),
         body: NotificationCenter(
           key: key,
-          notificationCenterService: NotificationService(listOfNotifications: [
+          notificationCenterService:
+              LocalNotificationService(listOfActiveNotifications: [
             NotificationModel(
+              id: 1,
               title: 'Notification title 1',
               body: 'Notification body 1',
-              dateTime: DateTime.now(),
-              isRead: false,
+              dateTimePushed: DateTime.now(),
             ),
             NotificationModel(
-              title: 'RECURRING',
-              body: 'RECURRING',
-              dateTime: DateTime.now(),
-              isRead: false,
-              isScheduled: true,
-            ),
-            NotificationModel(
+              id: 2,
               title: 'Notification title 2',
               body: 'Notification body 2',
-              dateTime: DateTime.now(),
-              isRead: false,
-            ),
-            NotificationModel(
-              title: 'Notification title 3',
-              body: 'Notification body 3',
-              dateTime: DateTime.now(),
-              isRead: false,
+              dateTimePushed: DateTime.now(),
             ),
           ]),
           notificationTheme: const NotificationStyle(

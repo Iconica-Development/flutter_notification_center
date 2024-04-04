@@ -1,15 +1,24 @@
 import 'package:flutter_notification_center/src/models/notification.dart';
 
-class NotificationService {
-  List<NotificationModel> listOfNotifications;
+abstract class NotificationService {
+  List<NotificationModel> listOfActiveNotifications;
+  List<NotificationModel> listOfPlannedNotifications;
 
-  NotificationService({this.listOfNotifications = const []});
+  NotificationService(
+      {this.listOfActiveNotifications = const [],
+      this.listOfPlannedNotifications = const []});
 
-  void addNotification(NotificationModel notification) {
-    listOfNotifications.add(notification);
-  }
+  Future pushNotification(NotificationModel notification);
 
-  List<NotificationModel> getNotifications() {
-    return listOfNotifications;
-  }
+  Future<List<NotificationModel>> getActiveNotifications();
+
+  Future createScheduledNotification(NotificationModel notification);
+
+  Future createRecurringNotification(NotificationModel notification);
+
+  Future deleteScheduledNotification(NotificationModel notificationId);
+
+  Future dismissActiveNotification(NotificationModel notificationId);
+
+  Future checkForScheduledNotifications();
 }
