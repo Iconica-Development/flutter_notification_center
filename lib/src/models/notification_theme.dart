@@ -10,13 +10,12 @@ class NotificationStyle {
   final Color? leadingIconColor;
   final Color? trailingIconColor;
   final EdgeInsets? contentPadding;
-  final double? titleFontSize;
-  final double? subtitleFontSize;
-  final FontWeight? titleFontWeight;
-  final FontWeight? subtitleFontWeight;
   final TextAlign? titleTextAlign;
   final TextAlign? subtitleTextAlign;
   final bool? dense;
+  final BoxDecoration? tileDecoration;
+  final Widget Function()? emptyNotificationsBuilder;
+  final TextStyle? appTitleTextStyle;
 
   const NotificationStyle({
     this.titleTextStyle,
@@ -25,12 +24,11 @@ class NotificationStyle {
     this.leadingIconColor,
     this.trailingIconColor,
     this.contentPadding,
-    this.titleFontSize,
-    this.subtitleFontSize,
-    this.titleFontWeight,
-    this.subtitleFontWeight,
     this.titleTextAlign,
     this.subtitleTextAlign,
     this.dense,
+    this.tileDecoration,
+    this.emptyNotificationsBuilder,
+    this.appTitleTextStyle,
   });
 }

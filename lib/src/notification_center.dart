@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_notification_center/src/models/notification.dart';
 import 'package:flutter_notification_center/src/models/notification_theme.dart';
+import 'package:flutter_notification_center/src/models/notification_translation.dart';
 import 'package:flutter_notification_center/src/services/notification_service.dart';
 import 'package:intl/intl.dart';
 
 class NotificationCenter extends StatefulWidget {
   final NotificationService notificationCenterService;
   final NotificationStyle? notificationTheme;
+  final NotificationTranslations translations;
 
   const NotificationCenter({
     super.key,
     required this.notificationCenterService,
     this.notificationTheme,
+    this.translations = const NotificationTranslations(),
   });
 
   @override
@@ -35,7 +38,10 @@ class _NotificationCenterState extends State<NotificationCenter> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notification Center'),
+        title: Text(
+          widget.translations.appBarTitle,
+          style: widget.notificationTheme?.appTitleTextStyle,
+        ),
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -45,45 +51,50 @@ class _NotificationCenterState extends State<NotificationCenter> {
         ),
       ),
       body: unreadNotifications.isEmpty
-          ? const Center(
-              child: Text('No unread notifications available.'),
-            )
+          ? widget.notificationTheme?.emptyNotificationsBuilder?.call() ??
+              Center(
+                child: Text(widget.translations.appBarTitle),
+              )
           : ListView.builder(
               itemCount: unreadNotifications.length,
               itemBuilder: (context, index) {
                 final notification = unreadNotifications[index];
                 final formattedDateTime = DateFormat('yyyy-MM-dd HH:mm')
                     .format(notification.dateTime);
-                return ListTile(
-                  title: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        notification.title,
-                        style: widget.notificationTheme?.titleTextStyle ??
-                            const TextStyle(),
-                      ),
-                      Text(
-                        notification.body,
-                        style: widget.notificationTheme?.subtitleTextStyle ??
-                            const TextStyle(),
-                      ),
-                      Text(
-                        formattedDateTime,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
+                return Container(
+                  decoration: widget.notificationTheme?.tileDecoration,
+                  child: ListTile(
+                    title: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          notification.title,
+                          style: widget.notificationTheme?.titleTextStyle ??
+                              const TextStyle(),
                         ),
-                      ),
-                    ],
-                  ),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: () {
-                      setState(() {
-                        notification.isRead = true;
-                      });
-                    },
+                        Text(
+                          notification.body,
+                          style: widget.notificationTheme?.subtitleTextStyle ??
+                              const TextStyle(),
+                        ),
+                        Text(
+                          formattedDateTime,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        setState(() {
+                          notification.isRead = true;
+                        });
+                      },
+                    ),
                   ),
                 );
               },
