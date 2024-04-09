@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_notification_center/flutter_notification_center.dart';
 
+/// A widget representing a notification bell.
 class NotificationBellWidgetStory extends StatelessWidget {
+  /// Creates a new [NotificationBellWidgetStory] instance.
+  ///
+  /// The [config] parameter specifies the notification configuration.
   const NotificationBellWidgetStory({
     required this.config,
-    super.key,
-  });
+    Key? key,
+  }) : super(key: key);
 
+  /// The notification configuration.
   final NotificationConfig config;
 
   @override

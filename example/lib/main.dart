@@ -1,12 +1,60 @@
+import 'package:example/config/firebase_options.dart';
+import 'package:example/services/firebase_notification_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_notification_center/flutter_notification_center.dart';
+import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await _configureApp();
+  await initializeDateFormatting();
+  await _signInUser();
+
   runApp(
-    const MaterialApp(
-      home: NotificationCenterDemo(),
+    ChangeNotifierProvider(
+      create: (_) => FirebaseNotificationService(),
+      child: const MaterialApp(
+        home: NotificationCenterDemo(),
+      ),
     ),
   );
+}
+
+Future<void> _configureApp() async {
+  try {
+    await dotenv.load(fileName: 'dotenv');
+  } catch (e) {
+    debugPrint('Failed to load dotenv file: $e');
+  }
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  await SystemChrome.setPreferredOrientations(
+    [
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp,
+    ],
+  );
+}
+
+Future<void> _signInUser() async {
+  FirebaseAuth auth = FirebaseAuth.instance;
+  User? user = auth.currentUser;
+  if (user == null) {
+    try {
+      UserCredential userCredential = await auth.signInWithEmailAndPassword(
+        email: 'freek@iconica.nl',
+        password: 'wachtwoord',
+      );
+    } catch (e) {
+      debugPrint('Failed to sign in: $e');
+    }
+  }
 }
 
 class NotificationCenterDemo extends StatefulWidget {
@@ -17,43 +65,24 @@ class NotificationCenterDemo extends StatefulWidget {
 }
 
 class _NotificationCenterDemoState extends State<NotificationCenterDemo> {
-  var config = NotificationConfig(
-    service: LocalNotificationService(
-      listOfActiveNotifications: [
-        NotificationModel(
-          id: 1,
-          title: 'Notification title 1',
-          body: 'Notification body 1',
-          dateTimePushed: DateTime.now(),
-        ),
-        NotificationModel(
-          id: 2,
-          title: 'RECURRING',
-          body: 'RECURRING',
-          dateTimePushed: DateTime.now(),
-        ),
-        NotificationModel(
-          id: 3,
-          title: 'Notification title 2',
-          body: 'Notification body 2',
-          dateTimePushed: DateTime.now(),
-        ),
-        NotificationModel(
-          id: 4,
-          title: 'Notification title 3',
-          body: 'Notification body 3',
-          dateTimePushed: DateTime.now(),
-        ),
-      ],
-    ),
-    style: const NotificationStyle(
-        titleTextStyle: TextStyle(color: Colors.red, fontSize: 20),
-        subtitleTextStyle: TextStyle(color: Colors.blue, fontSize: 16),
-        subtitleTextAlign: TextAlign.end),
-  );
-
   @override
   Widget build(BuildContext context) {
+    var config = NotificationConfig(
+      service: Provider.of<FirebaseNotificationService>(
+          context), // Use the same instance of FirebaseNotificationService
+      style: const NotificationStyle(
+        appTitleTextStyle: TextStyle(
+          color: Colors.black,
+          fontSize: 20,
+        ),
+        titleTextStyle: TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.w500,
+          fontSize: 20,
+        ),
+      ),
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notification Center Demo'),

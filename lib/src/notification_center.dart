@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_notification_center/flutter_notification_center.dart';
+import 'package:flutter_notification_center/src/notification_detail.dart';
 import 'package:intl/intl.dart';
 
+/// Widget for displaying the notification center.
 class NotificationCenter extends StatefulWidget {
+  /// Configuration for the notification center.
   final NotificationConfig config;
 
+  /// Constructs a new NotificationCenter instance.
+  ///
+  /// [config]: Configuration for the notification center.
   const NotificationCenter({
     required this.config,
-    super.key,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   _NotificationCenterState createState() => _NotificationCenterState();
@@ -60,38 +66,86 @@ class _NotificationCenterState extends State<NotificationCenter> {
                     ? DateFormat('yyyy-MM-dd HH:mm')
                         .format(notification.dateTimePushed!)
                     : 'Pending';
-                return ListTile(
-                  title: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        notification.title,
-                        style: widget.config.style.titleTextStyle ??
-                            const TextStyle(),
-                      ),
-                      Text(
-                        notification.body,
-                        style: widget.config.style.subtitleTextStyle ??
-                            const TextStyle(),
-                      ),
-                      Text(
-                        formattedDateTime,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
+                return GestureDetector(
+                  onTap: () {
+                    widget.config.service.markNotificationAsRead(notification);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NotificationDetailPage(
+                          config: widget.config,
+                          notification: notification,
                         ),
                       ),
-                    ],
-                  ),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: () {
-                      setState(() {
-                        widget.config.service
-                            .dismissActiveNotification(notification);
-                        print('Notification dismissed: $notification');
-                      });
-                    },
+                    );
+                  },
+                  child: Container(
+                    color: notification.isRead
+                        ? Colors.grey.shade300
+                        : Colors.transparent,
+                    child: ListTile(
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            notification.title,
+                            style: widget.config.style.titleTextStyle ??
+                                const TextStyle(),
+                          ),
+                          Text(
+                            notification.body,
+                            style: widget.config.style.subtitleTextStyle ??
+                                const TextStyle(),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            formattedDateTime,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (notification.isPinned)
+                            IconButton(
+                              icon: const Icon(Icons.push_pin),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        NotificationDetailPage(
+                                      config: widget.config,
+                                      notification: notification,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          if (!notification.isPinned)
+                            IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: () {
+                                setState(() {
+                                  widget.config.service
+                                      .dismissActiveNotification(notification);
+                                  setState(() {
+                                    _notificationsFuture = widget.config.service
+                                        .getActiveNotifications();
+                                  });
+                                  debugPrint(
+                                      'Notification dismissed: $notification');
+                                });
+                              },
+                            ),
+                        ],
+                      ),
+                    ),
                   ),
                 );
               },
@@ -101,15 +155,18 @@ class _NotificationCenterState extends State<NotificationCenter> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await widget.config.service.createRecurringNotification(
+          widget.config.service.createScheduledNotification(
             NotificationModel(
-                id: 3,
-                title: 'HALLO',
-                body: 'DIT IS DE BODY',
-                recurring: true,
-                occuringInterval: OcurringInterval.debug,
-                scheduledFor: DateTime.now().add(const Duration(seconds: 5))),
+              id: UniqueKey().toString(),
+              title: UniqueKey().toString(),
+              body: 'This is a new notification',
+              scheduledFor: DateTime.now().add(const Duration(seconds: 10)),
+            ),
           );
+          setState(() {
+            _notificationsFuture =
+                widget.config.service.getActiveNotifications();
+          });
         },
         child: const Icon(Icons.add),
       ),
