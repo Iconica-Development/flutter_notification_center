@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 /// Enum representing the interval at which notifications occur.
 enum OcurringInterval {
   /// Notifications occur daily.
@@ -42,6 +44,9 @@ class NotificationModel {
   /// Indicates if the notification has been read.
   final bool isRead;
 
+  /// Icon to be displayed with the notification.
+  final IconData icon;
+
   /// Constructs a new NotificationModel instance.
   ///
   /// [id]: Unique identifier for the notification.
@@ -63,12 +68,13 @@ class NotificationModel {
     this.occuringInterval,
     this.isPinned = false,
     this.isRead = false,
+    this.icon = Icons.notifications,
   });
 
   /// Override toString() to provide custom string representation
   @override
   String toString() {
-    return 'NotificationModel{id: $id, title: $title, body: $body, dateTimePushed: $dateTimePushed, scheduledFor: $scheduledFor, recurring: $recurring, occuringInterval: $occuringInterval, isPinned: $isPinned}';
+    return 'NotificationModel{id: $id, title: $title, body: $body, dateTimePushed: $dateTimePushed, scheduledFor: $scheduledFor, recurring: $recurring, occuringInterval: $occuringInterval, isPinned: $isPinned, icon: $icon}';
   }
 
   /// Method to create a NotificationModel object from JSON data
@@ -89,6 +95,9 @@ class NotificationModel {
           : null,
       isPinned: json['isPinned'] ?? false,
       isRead: json['isRead'] ?? false,
+      icon: json['icon'] != null
+          ? IconData(json['icon'], fontFamily: Icons.notifications.fontFamily)
+          : Icons.notifications,
     );
   }
 
@@ -104,6 +113,7 @@ class NotificationModel {
       'occuringInterval': occuringInterval?.index,
       'isPinned': isPinned,
       'isRead': isRead,
+      'icon': icon.codePoint,
     };
   }
 
@@ -118,6 +128,7 @@ class NotificationModel {
     OcurringInterval? occuringInterval,
     bool? isPinned,
     bool? isRead,
+    IconData? icon,
   }) {
     return NotificationModel(
       id: id ?? this.id,
@@ -129,6 +140,7 @@ class NotificationModel {
       occuringInterval: occuringInterval ?? this.occuringInterval,
       isPinned: isPinned ?? this.isPinned,
       isRead: isRead ?? this.isRead,
+      icon: icon ?? this.icon,
     );
   }
 }
