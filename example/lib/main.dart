@@ -68,8 +68,7 @@ class _NotificationCenterDemoState extends State<NotificationCenterDemo> {
   @override
   Widget build(BuildContext context) {
     var config = NotificationConfig(
-      service: Provider.of<FirebaseNotificationService>(
-          context), // Use the same instance of FirebaseNotificationService
+      service: Provider.of<FirebaseNotificationService>(context),
       style: const NotificationStyle(
         appTitleTextStyle: TextStyle(
           color: Colors.black,
@@ -77,8 +76,8 @@ class _NotificationCenterDemoState extends State<NotificationCenterDemo> {
         ),
         titleTextStyle: TextStyle(
           color: Colors.black,
-          fontWeight: FontWeight.w500,
-          fontSize: 20,
+          fontWeight: FontWeight.w400,
+          fontSize: 16,
         ),
       ),
     );

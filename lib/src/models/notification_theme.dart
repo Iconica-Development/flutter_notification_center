@@ -1,7 +1,28 @@
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
 
 /// Defines the appearance customization for notifications.
 class NotificationStyle {
+  /// Creates a new [NotificationStyle] instance.
+  ///
+  /// Each parameter is optional and allows customizing various aspects
+  /// of the notification appearance.
+  const NotificationStyle({
+    this.titleTextStyle,
+    this.subtitleTextStyle,
+    this.backgroundColor,
+    this.leadingIconColor,
+    this.trailingIconColor,
+    this.contentPadding,
+    this.titleTextAlign,
+    this.subtitleTextAlign,
+    this.dense,
+    this.tileDecoration,
+    this.emptyNotificationsBuilder,
+    this.appTitleTextStyle,
+    this.dividerColor,
+    this.isReadDotColor,
+  });
+
   /// The text style for the title of the notification.
   final TextStyle? titleTextStyle;
 
@@ -38,22 +59,9 @@ class NotificationStyle {
   /// The text style for the application title.
   final TextStyle? appTitleTextStyle;
 
-  /// Creates a new [NotificationStyle] instance.
-  ///
-  /// Each parameter is optional and allows customizing various aspects
-  /// of the notification appearance.
-  const NotificationStyle({
-    this.titleTextStyle,
-    this.subtitleTextStyle,
-    this.backgroundColor,
-    this.leadingIconColor,
-    this.trailingIconColor,
-    this.contentPadding,
-    this.titleTextAlign,
-    this.subtitleTextAlign,
-    this.dense,
-    this.tileDecoration,
-    this.emptyNotificationsBuilder,
-    this.appTitleTextStyle,
-  });
+  /// The color of the divider.
+  final Color? dividerColor;
+
+  /// The color of the dot indicating if the notification is read.
+  final Color? isReadDotColor;
 }

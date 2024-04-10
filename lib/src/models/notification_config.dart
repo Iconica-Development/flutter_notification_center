@@ -1,17 +1,7 @@
-import 'package:flutter_notification_center/flutter_notification_center.dart';
-import 'package:flutter_notification_center/src/models/notification_translation.dart';
+import "package:flutter_notification_center/flutter_notification_center.dart";
 
 /// Configuration class for notifications.
 class NotificationConfig {
-  /// The notification service to use for delivering notifications.
-  final NotificationService service;
-
-  /// The style of the notification.
-  final NotificationStyle style;
-
-  /// Translations for notification messages.
-  final NotificationTranslations translations;
-
   /// Creates a new [NotificationConfig] instance.
   ///
   /// The [service] parameter is required and specifies the notification service
@@ -23,4 +13,13 @@ class NotificationConfig {
     this.style = const NotificationStyle(),
     this.translations = const NotificationTranslations(),
   });
+
+  /// The notification service to use for delivering notifications.
+  final NotificationService service;
+
+  /// The style of the notification.
+  final NotificationStyle style;
+
+  /// Translations for notification messages.
+  final NotificationTranslations translations;
 }

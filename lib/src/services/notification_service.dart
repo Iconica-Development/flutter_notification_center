@@ -1,26 +1,29 @@
-import 'dart:async';
+import "dart:async";
 
-import 'package:flutter_notification_center/src/models/notification.dart';
+import "package:flutter/material.dart";
+import "package:flutter_notification_center/src/models/notification.dart";
 
 /// An abstract class representing a service for managing notifications.
-abstract class NotificationService {
-  /// A list of active notifications.
-  List<NotificationModel> listOfActiveNotifications;
-
-  /// A list of planned notifications.
-  List<NotificationModel> listOfPlannedNotifications;
-
+abstract class NotificationService with ChangeNotifier {
   /// Creates a new [NotificationService] instance.
   ///
-  /// The [listOfActiveNotifications] parameter specifies the list of active notifications,
+  /// The [listOfActiveNotifications] parameter specifies the
+  ///  list of active notifications,
   /// with a default value of an empty list.
   ///
-  /// The [listOfPlannedNotifications] parameter specifies the list of planned notifications,
+  /// The [listOfPlannedNotifications] parameter specifies the
+  ///  list of planned notifications,
   /// with a default value of an empty list.
   NotificationService({
     this.listOfActiveNotifications = const [],
     this.listOfPlannedNotifications = const [],
   });
+
+  /// A list of active notifications.
+  List<NotificationModel> listOfActiveNotifications;
+
+  /// A list of planned notifications.
+  List<NotificationModel> listOfPlannedNotifications;
 
   /// Pushes a notification to the service.
   Future pushNotification(NotificationModel notification);

@@ -45,3 +45,8 @@ app.*.map.json
 
 # iOS related
 /ios/
+
+lib/config/
+pubspec.lock
+dotenv
+

@@ -6,7 +6,8 @@ import '../config/firebase_collections.dart';
 import 'package:flutter_notification_center/src/models/notification.dart';
 import 'package:flutter_notification_center/src/services/notification_service.dart';
 
-class FirebaseNotificationService with ChangeNotifier
+class FirebaseNotificationService
+    with ChangeNotifier
     implements NotificationService {
   @override
   List<NotificationModel> listOfActiveNotifications;
@@ -39,11 +40,7 @@ class FirebaseNotificationService with ChangeNotifier
       Map<String, dynamic> notificationMap = notification.toMap();
       await notifications.doc(notification.id).set(notificationMap);
 
-      print('--- Trying to notify listeners ---');
       listOfActiveNotifications.add(notification);
-      listOfActiveNotifications.forEach((notification) {
-        print('Notification ID: ${notification.id}');
-      });
       notifyListeners();
     } catch (e) {
       debugPrint('Error creating document: $e');
@@ -67,12 +64,7 @@ class FirebaseNotificationService with ChangeNotifier
       }).toList();
 
       listOfActiveNotifications = activeNotifications;
-      print('--- Trying to notify listeners ---');
-      listOfActiveNotifications.forEach((notification) {
-        print('Notification ID: ${notification.id}');
-      });
       notifyListeners();
-
       return listOfActiveNotifications;
     } catch (e) {
       debugPrint('Error getting active notifications: $e');
@@ -151,6 +143,9 @@ class FirebaseNotificationService with ChangeNotifier
           .collection(FirebaseCollectionNames.active_notifications)
           .doc(notificationModel.id);
       await documentReference.delete();
+      listOfActiveNotifications
+          .removeAt(listOfActiveNotifications.indexOf(notificationModel));
+      notifyListeners();
     } catch (e) {
       debugPrint('Error deleting document: $e');
     }
@@ -164,6 +159,8 @@ class FirebaseNotificationService with ChangeNotifier
           .collection(FirebaseCollectionNames.active_notifications)
           .doc(notificationModel.id);
       await documentReference.update({'isRead': true});
+      notificationModel.isRead = true;
+      notifyListeners();
     } catch (e) {
       debugPrint('Error updating document: $e');
     }

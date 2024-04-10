@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_notification_center/flutter_notification_center.dart';
+import "package:flutter/material.dart";
+import "package:flutter_notification_center/flutter_notification_center.dart";
 
 /// A widget representing a notification bell.
 class NotificationBellWidgetStory extends StatelessWidget {
@@ -8,25 +8,23 @@ class NotificationBellWidgetStory extends StatelessWidget {
   /// The [config] parameter specifies the notification configuration.
   const NotificationBellWidgetStory({
     required this.config,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   /// The notification configuration.
   final NotificationConfig config;
 
   @override
-  Widget build(BuildContext context) {
-    return NotificationBell(
-      config: config,
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => NotificationCenter(
-              config: config,
+  Widget build(BuildContext context) => NotificationBell(
+        config: config,
+        onTap: () async {
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => NotificationCenter(
+                config: config,
+              ),
             ),
-          ),
-        );
-      },
-    );
-  }
+          );
+        },
+      );
 }
