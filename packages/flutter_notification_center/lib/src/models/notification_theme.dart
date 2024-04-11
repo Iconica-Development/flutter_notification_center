@@ -11,7 +11,7 @@ class NotificationStyle {
     this.subtitleTextStyle,
     this.backgroundColor,
     this.leadingIconColor,
-    this.trailingIconColor,
+    this.pinnedIconColor,
     this.contentPadding,
     this.titleTextAlign,
     this.subtitleTextAlign,
@@ -21,6 +21,7 @@ class NotificationStyle {
     this.appTitleTextStyle,
     this.dividerColor,
     this.isReadDotColor,
+    this.showNotificationIcon,
   });
 
   /// The text style for the title of the notification.
@@ -36,7 +37,7 @@ class NotificationStyle {
   final Color? leadingIconColor;
 
   /// The color of the trailing icon (if any) in the notification.
-  final Color? trailingIconColor;
+  final Color? pinnedIconColor;
 
   /// The padding around the content of the notification.
   final EdgeInsets? contentPadding;
@@ -62,6 +63,9 @@ class NotificationStyle {
   /// The color of the divider.
   final Color? dividerColor;
 
-  /// The color of the dot indicating if the notification is read.
+  /// The color of the dot that shows that anotification has not been read.
   final Color? isReadDotColor;
+
+  /// Whether to show the notification icon.
+  final bool? showNotificationIcon;
 }

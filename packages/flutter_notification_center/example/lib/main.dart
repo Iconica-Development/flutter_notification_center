@@ -1,9 +1,9 @@
-import 'package:example/config/firebase_options.dart';
-import 'package:example/services/firebase_notification_service.dart';
+import 'package:example/customer_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_notification_center_firebase/flutter_notification_center_firebase.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_notification_center/flutter_notification_center.dart';
@@ -47,7 +47,7 @@ Future<void> _signInUser() async {
   User? user = auth.currentUser;
   if (user == null) {
     try {
-      UserCredential userCredential = await auth.signInWithEmailAndPassword(
+      await auth.signInWithEmailAndPassword(
         email: 'freek@iconica.nl',
         password: 'wachtwoord',
       );
@@ -58,7 +58,7 @@ Future<void> _signInUser() async {
 }
 
 class NotificationCenterDemo extends StatefulWidget {
-  const NotificationCenterDemo({Key? key}) : super(key: key);
+  const NotificationCenterDemo({super.key});
 
   @override
   State<NotificationCenterDemo> createState() => _NotificationCenterDemoState();
@@ -69,17 +69,29 @@ class _NotificationCenterDemoState extends State<NotificationCenterDemo> {
   Widget build(BuildContext context) {
     var config = NotificationConfig(
       service: Provider.of<FirebaseNotificationService>(context),
-      style: const NotificationStyle(
-        appTitleTextStyle: TextStyle(
-          color: Colors.black,
-          fontSize: 20,
+      notificationWidgetBuilder: (notification, context) =>
+          CustomNotificationWidget(
+        notification: notification,
+        style: const NotificationStyle(
+          appTitleTextStyle: TextStyle(
+            color: Colors.black,
+            fontSize: 20,
+          ),
+          titleTextStyle: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w400,
+            fontSize: 16,
+          ),
+          leadingIconColor: Colors.grey,
+          pinnedIconColor: Colors.grey,
+          isReadDotColor: Colors.red,
+          showNotificationIcon: true,
         ),
-        titleTextStyle: TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.w400,
-          fontSize: 16,
-        ),
+        notificationService: Provider.of<FirebaseNotificationService>(context),
+        notificationTranslations: const NotificationTranslations(),
+        context: context,
       ),
+      seperateNotificationsWithDivider: true,
     );
 
     return Scaffold(

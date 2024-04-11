@@ -1,0 +1,32 @@
+name: flutter_notification_center
+description: "A new Flutter project."
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0
+
+environment:
+  sdk: '>=3.3.2 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  intl: ^0.17.0
+
+  flutter_animated_widgets:
+    git:
+      url: https://github.com/Iconica-Development/flutter_animated_widgets
+      ref: 0.0.1  
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter  
+  flutter_iconica_analysis:
+    git:
+      url: https://github.com/Iconica-Development/flutter_iconica_analysis
+      ref: 7.0.0
+
+# The following section is specific to Flutter packages.
+flutter:
+  uses-material-design: true

@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:flutter_notification_center/flutter_notification_center.dart";
+import "../flutter_notification_center.dart";
 
 /// A widget representing a notification bell.
 class NotificationBellWidgetStory extends StatelessWidget {

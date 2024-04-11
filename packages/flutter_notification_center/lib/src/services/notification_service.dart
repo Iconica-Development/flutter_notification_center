@@ -1,7 +1,7 @@
 import "dart:async";
 
 import "package:flutter/material.dart";
-import "package:flutter_notification_center/src/models/notification.dart";
+import "../models/notification.dart";
 
 /// An abstract class representing a service for managing notifications.
 abstract class NotificationService with ChangeNotifier {

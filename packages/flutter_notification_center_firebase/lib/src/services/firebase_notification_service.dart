@@ -2,9 +2,8 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_notification_center/flutter_notification_center.dart';
 import '../config/firebase_collections.dart';
-import 'package:flutter_notification_center/src/models/notification.dart';
-import 'package:flutter_notification_center/src/services/notification_service.dart';
 
 class FirebaseNotificationService
     with ChangeNotifier
@@ -14,6 +13,7 @@ class FirebaseNotificationService
   @override
   List<NotificationModel> listOfPlannedNotifications;
 
+  // ignore: unused_field
   late Timer _timer;
 
   FirebaseNotificationService(
@@ -33,7 +33,7 @@ class FirebaseNotificationService
   Future<void> pushNotification(NotificationModel notification) async {
     try {
       CollectionReference notifications = FirebaseFirestore.instance
-          .collection(FirebaseCollectionNames.active_notifications);
+          .collection(FirebaseCollectionNames.activeNotifications);
 
       DateTime currentDateTime = DateTime.now();
       notification.dateTimePushed = currentDateTime;
@@ -52,7 +52,7 @@ class FirebaseNotificationService
     try {
       CollectionReference activeNotificationsCollection = FirebaseFirestore
           .instance
-          .collection(FirebaseCollectionNames.active_notifications);
+          .collection(FirebaseCollectionNames.activeNotifications);
 
       QuerySnapshot querySnapshot = await activeNotificationsCollection.get();
 
@@ -104,7 +104,7 @@ class FirebaseNotificationService
       NotificationModel notification) async {
     try {
       CollectionReference plannedNotifications = FirebaseFirestore.instance
-          .collection(FirebaseCollectionNames.planned_notifications);
+          .collection(FirebaseCollectionNames.plannedNotifications);
       Map<String, dynamic> notificationMap = notification.toMap();
       await plannedNotifications.doc(notification.id).set(notificationMap);
     } catch (e) {
@@ -113,16 +113,16 @@ class FirebaseNotificationService
   }
 
   @override
-  Future deleteScheduledNotification(
+  Future<void> deleteScheduledNotification(
       NotificationModel notificationModel) async {
     try {
       DocumentReference documentReference = FirebaseFirestore.instance
-          .collection(FirebaseCollectionNames.planned_notifications)
+          .collection(FirebaseCollectionNames.plannedNotifications)
           .doc(notificationModel.id);
       await documentReference.delete();
 
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection(FirebaseCollectionNames.planned_notifications)
+          .collection(FirebaseCollectionNames.plannedNotifications)
           .get();
 
       if (querySnapshot.docs.isEmpty) {
@@ -137,10 +137,11 @@ class FirebaseNotificationService
   }
 
   @override
-  Future dismissActiveNotification(NotificationModel notificationModel) async {
+  Future<void> dismissActiveNotification(
+      NotificationModel notificationModel) async {
     try {
       DocumentReference documentReference = FirebaseFirestore.instance
-          .collection(FirebaseCollectionNames.active_notifications)
+          .collection(FirebaseCollectionNames.activeNotifications)
           .doc(notificationModel.id);
       await documentReference.delete();
       listOfActiveNotifications
@@ -156,7 +157,7 @@ class FirebaseNotificationService
       NotificationModel notificationModel) async {
     try {
       DocumentReference documentReference = FirebaseFirestore.instance
-          .collection(FirebaseCollectionNames.active_notifications)
+          .collection(FirebaseCollectionNames.activeNotifications)
           .doc(notificationModel.id);
       await documentReference.update({'isRead': true});
       notificationModel.isRead = true;
@@ -172,7 +173,7 @@ class FirebaseNotificationService
     try {
       CollectionReference plannedNotificationsCollection = FirebaseFirestore
           .instance
-          .collection(FirebaseCollectionNames.planned_notifications);
+          .collection(FirebaseCollectionNames.plannedNotifications);
 
       QuerySnapshot querySnapshot = await plannedNotificationsCollection.get();
 
@@ -207,13 +208,6 @@ class FirebaseNotificationService
           }
         }
       }
-
-      plannedNotifications.forEach((notification) async {
-        if (notification.scheduledFor!.isBefore(currentTime) ||
-            notification.scheduledFor!.isAtSameMomentAs(currentTime)) {
-          await deleteScheduledNotification(notification);
-        }
-      });
     } catch (e) {
       debugPrint('Error getting planned notifications: $e');
       return;

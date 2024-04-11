@@ -1,4 +1,4 @@
-name: example
+name: flutter_notification_center_firebase
 description: "A new Flutter project."
 
 publish_to: "none"
@@ -21,9 +21,10 @@ dependencies:
   firebase_storage: ^11.0.14
 
   cupertino_icons: ^1.0.2
-  flutter_notification_center:
-    path: ../
   provider: ^6.1.2
+
+  flutter_notification_center:
+    path: ../flutter_notification_center
 
 dev_dependencies:
   flutter_test:

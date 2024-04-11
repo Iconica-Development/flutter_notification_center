@@ -1,33 +1,37 @@
 import "package:flutter/material.dart";
-import "package:flutter_notification_center/flutter_notification_center.dart";
+import "../flutter_notification_center.dart";
 import "package:intl/intl.dart";
 
 /// A page displaying the details of a notification.
 class NotificationDetailPage extends StatelessWidget {
   /// Creates a new [NotificationDetailPage] instance.
   ///
-  /// The [config] parameter specifies the notification configuration.
+  /// The [notificationStyle] parameter specifies the notification style.
   ///
   /// The [notification] parameter specifies the notification
   ///  to display details for.
   const NotificationDetailPage({
-    required this.config,
+    required this.notificationStyle,
     required this.notification,
+    required this.translations,
     super.key,
   });
 
-  /// The notification configuration.
-  final NotificationConfig config;
+  /// The notification style.
+  final NotificationStyle notificationStyle;
 
   /// The notification to display details for.
   final NotificationModel notification;
+
+  /// The translations for the notification detail page.
+  final NotificationTranslations translations;
 
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           title: Text(
-            config.translations.appBarTitle,
-            style: config.style.appTitleTextStyle,
+            translations.appBarTitle,
+            style: notificationStyle.appTitleTextStyle,
           ),
           centerTitle: true,
         ),
@@ -39,12 +43,13 @@ class NotificationDetailPage extends StatelessWidget {
               children: [
                 Text(
                   notification.title,
-                  style: config.style.titleTextStyle ?? const TextStyle(),
+                  style: notificationStyle.titleTextStyle ?? const TextStyle(),
                 ),
                 const SizedBox(height: 10),
                 Text(
                   notification.body,
-                  style: config.style.subtitleTextStyle ?? const TextStyle(),
+                  style:
+                      notificationStyle.subtitleTextStyle ?? const TextStyle(),
                 ),
                 const SizedBox(height: 10),
                 Text(
