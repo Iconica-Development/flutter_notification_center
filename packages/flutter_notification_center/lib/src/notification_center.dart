@@ -82,14 +82,165 @@ class NotificationCenterState extends State<NotificationCenter> {
                   }
                   var notification = snapshot.data![index ~/ 2];
                   return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                    child: widget.config
-                        .notificationWidgetBuilder(notification, context),
-                  );
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: widget.config.notificationWidgetBuilder != null
+                          ? widget.config.notificationWidgetBuilder!(
+                              notification, context)
+                          : notification.isPinned
+                              //Pinned notification
+                              ? GestureDetector(
+                                  onTap: () async =>
+                                      _navigateToNotificationDetail(
+                                          context,
+                                          notification,
+                                          widget.config.service,
+                                          widget.config.translations,
+                                          const NotificationStyle()),
+                                  child: ListTile(
+                                    leading: Icon(
+                                      notification.icon,
+                                      color: Colors.grey,
+                                    ),
+                                    title: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            notification.title,
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    trailing: IconButton(
+                                      icon: const Icon(Icons.push_pin),
+                                      color: Colors.grey,
+                                      onPressed: () async =>
+                                          _navigateToNotificationDetail(
+                                              context,
+                                              notification,
+                                              widget.config.service,
+                                              widget.config.translations,
+                                              const NotificationStyle()),
+                                      padding:
+                                          const EdgeInsets.only(left: 60.0),
+                                    ),
+                                  ),
+                                )
+                              //Dismissable notification
+                              : Dismissible(
+                                  key: Key(notification.id),
+                                  onDismissed: (direction) async {
+                                    await dismissNotification(
+                                        widget.config.service,
+                                        notification,
+                                        context);
+                                  },
+                                  background: Container(
+                                    color: Colors.red,
+                                    alignment: Alignment.centerRight,
+                                    child: const Icon(
+                                      Icons.delete,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  child: GestureDetector(
+                                    onTap: () async =>
+                                        _navigateToNotificationDetail(
+                                            context,
+                                            notification,
+                                            widget.config.service,
+                                            widget.config.translations,
+                                            const NotificationStyle()),
+                                    child: ListTile(
+                                      leading: Icon(
+                                        notification.icon,
+                                        color: Colors.grey,
+                                      ),
+                                      title: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              notification.title,
+                                              style: const TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      trailing: !notification.isRead
+                                          ? Container(
+                                              margin: const EdgeInsets.only(
+                                                  right: 8.0),
+                                              width: 12.0,
+                                              height: 12.0,
+                                              decoration: const BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.red,
+                                              ),
+                                            )
+                                          : null,
+                                    ),
+                                  ),
+                                ));
                 },
               );
             }
           },
         ),
       );
+}
+
+Future<void> _navigateToNotificationDetail(
+  BuildContext context,
+  NotificationModel notification,
+  NotificationService notificationService,
+  NotificationTranslations notificationTranslations,
+  NotificationStyle style,
+) async {
+  await markNotificationAsRead(notificationService, notification);
+  if (context.mounted) {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NotificationDetailPage(
+          translations: notificationTranslations,
+          notification: notification,
+          notificationStyle: style,
+        ),
+      ),
+    );
+  }
+}
+
+Future<void> dismissNotification(
+  NotificationService notificationService,
+  NotificationModel notification,
+  BuildContext context,
+) async {
+  await notificationService.dismissActiveNotification(notification);
+  if (context.mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Notification dismissed"),
+      ),
+    );
+  }
+}
+
+Future<void> markNotificationAsRead(
+  NotificationService notificationService,
+  NotificationModel notification,
+) async {
+  await notificationService.markNotificationAsRead(notification);
 }

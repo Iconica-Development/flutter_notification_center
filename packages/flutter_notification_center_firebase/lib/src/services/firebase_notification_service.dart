@@ -113,7 +113,7 @@ class FirebaseNotificationService
   }
 
   @override
-  Future<void> deleteScheduledNotification(
+  Future<void> deletePlannedNotification(
       NotificationModel notificationModel) async {
     try {
       DocumentReference documentReference = FirebaseFirestore.instance
@@ -192,7 +192,7 @@ class FirebaseNotificationService
         if (notification.scheduledFor!.isBefore(currentTime) ||
             notification.scheduledFor!.isAtSameMomentAs(currentTime)) {
           await pushNotification(notification);
-          await deleteScheduledNotification(notification);
+          await deletePlannedNotification(notification);
 
           //Plan new recurring notification instance
           if (notification.recurring) {

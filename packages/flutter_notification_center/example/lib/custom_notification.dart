@@ -92,7 +92,7 @@ class CustomNotificationWidget extends StatelessWidget {
                         height: 12.0,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: style.isReadDotColor ?? Colors.red,
+                          color: style.isReadDotColor,
                         ),
                       )
                     : null,

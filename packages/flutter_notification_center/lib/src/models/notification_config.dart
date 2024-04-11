@@ -12,9 +12,9 @@ class NotificationConfig {
   /// translations for notification messages.
   const NotificationConfig({
     required this.service,
-    required this.seperateNotificationsWithDivider,
+    this.seperateNotificationsWithDivider = true,
     this.translations = const NotificationTranslations(),
-    required this.notificationWidgetBuilder,
+    this.notificationWidgetBuilder,
   });
 
   /// The notification service to use for delivering notifications.
@@ -27,6 +27,6 @@ class NotificationConfig {
   final NotificationTranslations translations;
 
   /// Widget for building each notification item.
-  final Widget Function(NotificationModel, BuildContext)
+  final Widget Function(NotificationModel, BuildContext)?
       notificationWidgetBuilder;
 }

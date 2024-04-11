@@ -1,11 +1,10 @@
-import 'package:example/customer_notification.dart';
+import 'package:example/custom_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_notification_center_firebase/flutter_notification_center_firebase.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_notification_center/flutter_notification_center.dart';
 import 'package:provider/provider.dart';
 

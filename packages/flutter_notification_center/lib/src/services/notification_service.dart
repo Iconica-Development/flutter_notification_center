@@ -38,7 +38,7 @@ abstract class NotificationService with ChangeNotifier {
   Future createRecurringNotification(NotificationModel notification);
 
   /// Deletes a scheduled notification.
-  Future deleteScheduledNotification(NotificationModel notification);
+  Future deletePlannedNotification(NotificationModel notification);
 
   /// Dismisses an active notification.
   Future dismissActiveNotification(NotificationModel notification);
