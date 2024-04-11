@@ -43,18 +43,7 @@ Future<void> _configureApp() async {
 }
 
 Future<void> _signInUser() async {
-  FirebaseAuth auth = FirebaseAuth.instance;
-  User? user = auth.currentUser;
-  if (user == null) {
-    try {
-      await auth.signInWithEmailAndPassword(
-        email: 'freek@iconica.nl',
-        password: 'wachtwoord',
-      );
-    } catch (e) {
-      debugPrint('Failed to sign in: $e');
-    }
-  }
+  //TO DO: Implement your own sign in logic
 }
 
 class NotificationCenterDemo extends StatefulWidget {
