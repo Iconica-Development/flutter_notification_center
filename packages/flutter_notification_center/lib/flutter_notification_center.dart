@@ -7,6 +7,8 @@ export "src/models/notification_config.dart";
 export "src/models/notification_theme.dart";
 export "src/models/notification_translation.dart";
 export "src/notification_bell.dart";
+export "src/notification_dialog.dart";
+export "src/notification_snackbar.dart";
 export "src/notification_detail.dart";
 export "src/notification_bell_story.dart";
 export "src/notification_center.dart";
