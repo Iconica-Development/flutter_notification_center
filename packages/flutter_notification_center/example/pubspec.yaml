@@ -1,4 +1,4 @@
-name: flutter_notification_center
+name: example
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -18,6 +18,20 @@ dependencies:
     git:
       url: https://github.com/Iconica-Development/flutter_animated_widgets
       ref: 0.0.1  
+  cloud_firestore: ^4.16.1
+
+  flutter_dotenv: ^5.0.2
+  firebase_auth: ^4.2.6
+  firebase_core: ^2.5.0
+  firebase_storage: ^11.0.14
+  provider: ^6.1.2
+
+  flutter_notification_center:
+    path: ../
+  flutter_notification_center_firebase:
+    path: ../../flutter_notification_center_firebase
+
+
 
 dev_dependencies:
   flutter_test:
@@ -30,3 +44,6 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   uses-material-design: true
+  assets:
+    - dotenv
+
