@@ -1,4 +1,5 @@
 import 'package:example/custom_notification.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -6,7 +7,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_notification_center_firebase/flutter_notification_center_firebase.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_notification_center/flutter_notification_center.dart';
-import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,11 +15,8 @@ void main() async {
   await _signInUser();
 
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => FirebaseNotificationService(),
-      child: const MaterialApp(
-        home: NotificationCenterDemo(),
-      ),
+    const MaterialApp(
+      home: NotificationCenterDemo(),
     ),
   );
 }
@@ -42,7 +39,8 @@ Future<void> _configureApp() async {
 }
 
 Future<void> _signInUser() async {
-  //TO DO: Implement your own sign in logic
+  FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: 'freek@iconica.nl', password: 'wachtwoord');
 }
 
 class NotificationCenterDemo extends StatefulWidget {
@@ -55,8 +53,16 @@ class NotificationCenterDemo extends StatefulWidget {
 class _NotificationCenterDemoState extends State<NotificationCenterDemo> {
   @override
   Widget build(BuildContext context) {
+    var service = FirebaseNotificationService(
+      newNotificationCallback: (notification) {
+        showDialog(
+            context: context,
+            builder: (context) => Dialog(child: Text(notification.title)));
+        debugPrint('New notification: ${notification.title}');
+      },
+    );
     var config = NotificationConfig(
-      service: Provider.of<FirebaseNotificationService>(context),
+      service: service,
       notificationWidgetBuilder: (notification, context) =>
           CustomNotificationWidget(
         notification: notification,
@@ -75,7 +81,7 @@ class _NotificationCenterDemoState extends State<NotificationCenterDemo> {
           isReadDotColor: Colors.red,
           showNotificationIcon: true,
         ),
-        notificationService: Provider.of<FirebaseNotificationService>(context),
+        notificationService: service,
         notificationTranslations: const NotificationTranslations(),
         context: context,
       ),
@@ -93,6 +99,18 @@ class _NotificationCenterDemoState extends State<NotificationCenterDemo> {
         ],
       ),
       body: const SizedBox.shrink(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          service.pushNotification(
+            NotificationModel(
+              id: UniqueKey().toString(),
+              title: 'Test',
+              body: 'This is a test',
+              scheduledFor: DateTime.now(),
+            ),
+          );
+        },
+      ),
     );
   }
 }
