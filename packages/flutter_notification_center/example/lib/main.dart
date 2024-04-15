@@ -1,5 +1,4 @@
 import 'package:example/custom_notification.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -39,8 +38,7 @@ Future<void> _configureApp() async {
 }
 
 Future<void> _signInUser() async {
-  FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: 'freek@iconica.nl', password: 'wachtwoord');
+  /// Implement your own sign in logic here
 }
 
 class NotificationCenterDemo extends StatefulWidget {

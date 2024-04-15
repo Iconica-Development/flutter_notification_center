@@ -9,6 +9,7 @@ A Flutter package for creating notification center displaying a list of notifica
 - Dismissable notifications: A dismissable notification can be dismissed by the user from the notification center.
 - Notification detail page: Clicking on a notification takes the user to a notification detail page.
 - Notification types: Notification types that can be created are: instant, scheduled, recurring.
+- Notification popups: If a notification is pushed a popup can appear in form of a dialog or snackbar.
 
 ## Setup
 
@@ -25,6 +26,8 @@ The `NotificationConfig` has its own parameters, as specified below:
 | notificationWidgetBuilder | The widget that defines the styles and logic for every notification |
 | enableNotificationPopups | If set to false no popups will be shown if a new notification is pushed |
 | showAsSnackBar | If true notifications popups will show as snackbar. If false shown as dialog|
+
+If you set `enableNotificationPopups` to true, you can use `PopupHandler` in the `newNotificationCallback` to display popups in case a new notification is pushed.
 
 The `notificationWidgetBuilder` expects the following parameters, as specified below:
 | Parameter | Explanation |
@@ -49,7 +52,6 @@ Create recurring notification:
     - occuringInterval with the pre defined interval (daily, weekly, monthly)
 
 To create a pinned notification, set isPinned = true when creating the notification.
-
 
 ### Example
 
