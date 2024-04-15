@@ -24,7 +24,6 @@ dependencies:
   firebase_auth: ^4.2.6
   firebase_core: ^2.5.0
   firebase_storage: ^11.0.14
-  provider: ^6.1.2
 
   flutter_notification_center:
     path: ../

@@ -8,6 +8,8 @@ import '../config/firebase_collections.dart';
 class FirebaseNotificationService
     with ChangeNotifier
     implements NotificationService {
+  final Function(NotificationModel) newNotificationCallback;
+
   @override
   List<NotificationModel> listOfActiveNotifications;
   @override
@@ -17,7 +19,8 @@ class FirebaseNotificationService
   late Timer _timer;
 
   FirebaseNotificationService(
-      {this.listOfActiveNotifications = const [],
+      {required this.newNotificationCallback,
+      this.listOfActiveNotifications = const [],
       this.listOfPlannedNotifications = const []}) {
     _startTimer();
   }
@@ -30,7 +33,8 @@ class FirebaseNotificationService
   }
 
   @override
-  Future<void> pushNotification(NotificationModel notification) async {
+  Future<void> pushNotification(NotificationModel notification,
+      [Function(NotificationModel model)? onNewNotification]) async {
     try {
       CollectionReference notifications = FirebaseFirestore.instance
           .collection(FirebaseCollectionNames.activeNotifications);
@@ -41,6 +45,14 @@ class FirebaseNotificationService
       await notifications.doc(notification.id).set(notificationMap);
 
       listOfActiveNotifications.add(notification);
+
+      //Show popup with notification conte
+      if (onNewNotification != null) {
+        onNewNotification(notification);
+      } else {
+        newNotificationCallback(notification);
+      }
+
       notifyListeners();
     } catch (e) {
       debugPrint('Error creating document: $e');
@@ -191,7 +203,8 @@ class FirebaseNotificationService
       for (NotificationModel notification in plannedNotifications) {
         if (notification.scheduledFor!.isBefore(currentTime) ||
             notification.scheduledFor!.isAtSameMomentAs(currentTime)) {
-          await pushNotification(notification);
+          await pushNotification(notification, newNotificationCallback);
+
           await deletePlannedNotification(notification);
 
           //Plan new recurring notification instance

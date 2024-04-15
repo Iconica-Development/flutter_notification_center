@@ -26,7 +26,8 @@ abstract class NotificationService with ChangeNotifier {
   List<NotificationModel> listOfPlannedNotifications;
 
   /// Pushes a notification to the service.
-  Future pushNotification(NotificationModel notification);
+  Future pushNotification(NotificationModel notification,
+      [Function(NotificationModel model)? onNewNotification]);
 
   /// Retrieves the list of active notifications.
   Future<List<NotificationModel>> getActiveNotifications();

@@ -6,7 +6,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_notification_center_firebase/flutter_notification_center_firebase.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_notification_center/flutter_notification_center.dart';
-import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,11 +14,8 @@ void main() async {
   await _signInUser();
 
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => FirebaseNotificationService(),
-      child: const MaterialApp(
-        home: NotificationCenterDemo(),
-      ),
+    const MaterialApp(
+      home: NotificationCenterDemo(),
     ),
   );
 }
@@ -42,7 +38,7 @@ Future<void> _configureApp() async {
 }
 
 Future<void> _signInUser() async {
-  //TO DO: Implement your own sign in logic
+  /// Implement your own sign in logic here
 }
 
 class NotificationCenterDemo extends StatefulWidget {
@@ -53,10 +49,20 @@ class NotificationCenterDemo extends StatefulWidget {
 }
 
 class _NotificationCenterDemoState extends State<NotificationCenterDemo> {
+  late NotificationConfig config;
+  late PopupHandler popupHandler;
+
   @override
-  Widget build(BuildContext context) {
-    var config = NotificationConfig(
-      service: Provider.of<FirebaseNotificationService>(context),
+  void initState() {
+    super.initState();
+    var service =
+        FirebaseNotificationService(newNotificationCallback: (notification) {
+      popupHandler.handleNotificationPopup(notification);
+    });
+    config = NotificationConfig(
+      service: service,
+      enableNotificationPopups: true,
+      showAsSnackBar: false,
       notificationWidgetBuilder: (notification, context) =>
           CustomNotificationWidget(
         notification: notification,
@@ -75,13 +81,17 @@ class _NotificationCenterDemoState extends State<NotificationCenterDemo> {
           isReadDotColor: Colors.red,
           showNotificationIcon: true,
         ),
-        notificationService: Provider.of<FirebaseNotificationService>(context),
+        notificationService: service,
         notificationTranslations: const NotificationTranslations(),
         context: context,
       ),
       seperateNotificationsWithDivider: true,
     );
+    popupHandler = PopupHandler(context: context, config: config);
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notification Center Demo'),
