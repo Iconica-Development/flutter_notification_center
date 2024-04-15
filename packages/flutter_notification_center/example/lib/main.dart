@@ -52,34 +52,18 @@ class NotificationCenterDemo extends StatefulWidget {
 
 class _NotificationCenterDemoState extends State<NotificationCenterDemo> {
   late NotificationConfig config;
+  late PopupHandler popupHandler;
 
   @override
   void initState() {
     super.initState();
-    var service = FirebaseNotificationService(
-      newNotificationCallback: (notification) {
-        if (config.showAsSnackBar) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            NotificationSnackbar(
-              title: notification.title,
-              body: notification.body,
-              datetimePublished: DateTime.now(),
-            ),
-          );
-        } else {
-          showDialog(
-            context: context,
-            builder: (context) => NotificationDialog(
-              title: notification.title,
-              body: notification.body,
-              datetimePublished: notification.dateTimePushed,
-            ),
-          );
-        }
-      },
-    );
+    var service =
+        FirebaseNotificationService(newNotificationCallback: (notification) {
+      popupHandler.handleNotificationPopup(notification);
+    });
     config = NotificationConfig(
       service: service,
+      enableNotificationPopups: true,
       showAsSnackBar: false,
       notificationWidgetBuilder: (notification, context) =>
           CustomNotificationWidget(
@@ -105,6 +89,7 @@ class _NotificationCenterDemoState extends State<NotificationCenterDemo> {
       ),
       seperateNotificationsWithDivider: true,
     );
+    popupHandler = PopupHandler(context: context, config: config);
   }
 
   @override

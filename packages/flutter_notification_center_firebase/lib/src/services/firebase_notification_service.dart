@@ -46,7 +46,7 @@ class FirebaseNotificationService
 
       listOfActiveNotifications.add(notification);
 
-      //Show popup with notification contents
+      //Show popup with notification conte
       if (onNewNotification != null) {
         onNewNotification(notification);
       } else {

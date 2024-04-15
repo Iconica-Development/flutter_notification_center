@@ -10,13 +10,13 @@ class NotificationConfig {
   /// to use. The [style] parameter is optional and defines the style of the
   /// notification. The [translations] parameter is also optional and provides
   /// translations for notification messages.
-  const NotificationConfig({
-    required this.service,
-    this.seperateNotificationsWithDivider = true,
-    this.translations = const NotificationTranslations(),
-    this.notificationWidgetBuilder,
-    this.showAsSnackBar = true,
-  });
+  const NotificationConfig(
+      {required this.service,
+      this.seperateNotificationsWithDivider = true,
+      this.translations = const NotificationTranslations(),
+      this.notificationWidgetBuilder,
+      this.showAsSnackBar = true,
+      this.enableNotificationPopups = true});
 
   /// The notification service to use for delivering notifications.
   final NotificationService service;
@@ -33,4 +33,7 @@ class NotificationConfig {
 
   /// Whether to show notifications as snackbars. If false show notifications as a dialog.
   final bool showAsSnackBar;
+
+  /// Whether to show notification popups.
+  final bool enableNotificationPopups;
 }
