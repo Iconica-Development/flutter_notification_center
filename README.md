@@ -23,6 +23,7 @@ The `NotificationConfig` has its own parameters, as specified below:
 | seperateNotificationsWithDivider | If true notifications will be seperated with dividers within the notification center |
 | translations | The translations that will be used |
 | notificationWidgetBuilder | The widget that defines the styles and logic for every notification |
+| showAsSnackBar | If true notifications popups will show as snackbar. If false shown as dialog|
 
 The `notificationWidgetBuilder` expects the following parameters, as specified below:
 | Parameter | Explanation |
