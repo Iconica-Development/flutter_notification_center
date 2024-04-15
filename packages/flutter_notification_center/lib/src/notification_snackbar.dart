@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class NotificationSnackbarWidget extends SnackBar {
-  NotificationSnackbarWidget({
+class NotificationSnackbar extends SnackBar {
+  NotificationSnackbar({
     super.key,
     required String title,
     required String body,
@@ -39,7 +39,6 @@ class NotificationSnackbarWidget extends SnackBar {
               ),
             ],
           ),
-          backgroundColor: Colors.grey.shade700,
           duration: const Duration(seconds: 8),
           action: SnackBarAction(
             label: 'Dismiss',

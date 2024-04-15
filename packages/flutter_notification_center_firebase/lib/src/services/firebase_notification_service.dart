@@ -45,8 +45,14 @@ class FirebaseNotificationService
       await notifications.doc(notification.id).set(notificationMap);
 
       listOfActiveNotifications.add(notification);
-      onNewNotification?.call(notification) ??
-          newNotificationCallback(notification);
+
+      //Show popup with notification contents
+      if (onNewNotification != null) {
+        onNewNotification(notification);
+      } else {
+        newNotificationCallback(notification);
+      }
+
       notifyListeners();
     } catch (e) {
       debugPrint('Error creating document: $e');

@@ -1,5 +1,4 @@
 import 'package:example/custom_notification.dart';
-import 'package:flutter_notification_center/src/notification_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -52,28 +51,36 @@ class NotificationCenterDemo extends StatefulWidget {
 }
 
 class _NotificationCenterDemoState extends State<NotificationCenterDemo> {
+  late NotificationConfig config;
+
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     var service = FirebaseNotificationService(
       newNotificationCallback: (notification) {
-        ScaffoldMessenger.of(context).showSnackBar(NotificationSnackbarWidget(
-          title: notification.title,
-          body: notification.body,
-          datetimePublished: DateTime.now(),
-        ));
-
-        // showDialog(
-        //   context: context,
-        //   builder: (context) => NotificationDialog(
-        //       title: notification.title,
-        //       body: notification.body,
-        //       datetimePublished: notification.dateTimePushed),
-        // );
-        debugPrint('New notification: ${notification.title}');
+        if (config.showAsSnackBar) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            NotificationSnackbar(
+              title: notification.title,
+              body: notification.body,
+              datetimePublished: DateTime.now(),
+            ),
+          );
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) => NotificationDialog(
+              title: notification.title,
+              body: notification.body,
+              datetimePublished: notification.dateTimePushed,
+            ),
+          );
+        }
       },
     );
-    var config = NotificationConfig(
+    config = NotificationConfig(
       service: service,
+      showAsSnackBar: false,
       notificationWidgetBuilder: (notification, context) =>
           CustomNotificationWidget(
         notification: notification,
@@ -98,7 +105,10 @@ class _NotificationCenterDemoState extends State<NotificationCenterDemo> {
       ),
       seperateNotificationsWithDivider: true,
     );
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notification Center Demo'),
@@ -110,18 +120,6 @@ class _NotificationCenterDemoState extends State<NotificationCenterDemo> {
         ],
       ),
       body: const SizedBox.shrink(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          service.pushNotification(
-            NotificationModel(
-              id: UniqueKey().toString(),
-              title: 'Test',
-              body: 'This is a test',
-              scheduledFor: DateTime.now(),
-            ),
-          );
-        },
-      ),
     );
   }
 }

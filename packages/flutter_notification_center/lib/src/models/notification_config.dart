@@ -15,6 +15,7 @@ class NotificationConfig {
     this.seperateNotificationsWithDivider = true,
     this.translations = const NotificationTranslations(),
     this.notificationWidgetBuilder,
+    this.showAsSnackBar = true,
   });
 
   /// The notification service to use for delivering notifications.
@@ -29,4 +30,7 @@ class NotificationConfig {
   /// Widget for building each notification item.
   final Widget Function(NotificationModel, BuildContext)?
       notificationWidgetBuilder;
+
+  /// Whether to show notifications as snackbars. If false show notifications as a dialog.
+  final bool showAsSnackBar;
 }
