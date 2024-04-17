@@ -44,6 +44,9 @@ abstract class NotificationService with ChangeNotifier {
   /// Dismisses an active notification.
   Future dismissActiveNotification(NotificationModel notification);
 
+  /// Pin an active notification.
+  Future pinActiveNotification(NotificationModel notification);
+
   /// Marks a notification as read.
   Future markNotificationAsRead(NotificationModel notification);
 

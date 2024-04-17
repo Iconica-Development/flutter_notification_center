@@ -136,17 +136,42 @@ class NotificationCenterState extends State<NotificationCenter> {
                               : Dismissible(
                                   key: Key(notification.id),
                                   onDismissed: (direction) async {
-                                    await dismissNotification(
-                                        widget.config.service,
-                                        notification,
-                                        context);
+                                    if (direction ==
+                                        DismissDirection.endToStart) {
+                                      await dismissNotification(
+                                          widget.config.service,
+                                          notification,
+                                          context);
+                                    } else if (direction ==
+                                        DismissDirection.startToEnd) {
+                                      await pinNotification(
+                                          widget.config.service,
+                                          notification,
+                                          context);
+                                    }
                                   },
                                   background: Container(
-                                    color: Colors.red,
+                                    color:
+                                        const Color.fromRGBO(59, 213, 111, 1),
+                                    alignment: Alignment.centerLeft,
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(left: 16.0),
+                                      child: Icon(
+                                        Icons.push_pin,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  secondaryBackground: Container(
+                                    color:
+                                        const Color.fromRGBO(255, 131, 131, 1),
                                     alignment: Alignment.centerRight,
-                                    child: const Icon(
-                                      Icons.delete,
-                                      color: Colors.white,
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(right: 16.0),
+                                      child: Icon(
+                                        Icons.delete,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                   child: GestureDetector(
@@ -233,6 +258,21 @@ Future<void> dismissNotification(
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text("Notification dismissed"),
+      ),
+    );
+  }
+}
+
+Future<void> pinNotification(
+  NotificationService notificationService,
+  NotificationModel notification,
+  BuildContext context,
+) async {
+  await notificationService.pinActiveNotification(notification);
+  if (context.mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Notification pinned"),
       ),
     );
   }

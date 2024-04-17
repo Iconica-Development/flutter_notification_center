@@ -56,23 +56,44 @@ class CustomNotificationWidget extends StatelessWidget {
         : Dismissible(
             key: Key(notification.id),
             onDismissed: (direction) async {
-              await dismissNotification(notificationService, notification);
+              if (direction == DismissDirection.endToStart) {
+                await dismissNotification(notificationService, notification);
+              } else if (direction == DismissDirection.startToEnd) {
+                await pinNotification(
+                    notificationService, notification, context);
+              }
             },
             background: Container(
-              color: Colors.red,
+              color: const Color.fromRGBO(59, 213, 111, 1),
+              alignment: Alignment.centerLeft,
+              child: const Padding(
+                padding: EdgeInsets.only(left: 16.0),
+                child: Icon(
+                  Icons.push_pin,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            secondaryBackground: Container(
+              color: const Color.fromRGBO(255, 131, 131, 1),
               alignment: Alignment.centerRight,
-              child: const Icon(
-                Icons.delete,
-                color: Colors.white,
+              child: const Padding(
+                padding: EdgeInsets.only(right: 16.0),
+                child: Icon(
+                  Icons.delete,
+                  color: Colors.white,
+                ),
               ),
             ),
             child: GestureDetector(
-              onTap: () async =>
-                  _navigateToNotificationDetail(context, notification),
+              onTap: () async => _navigateToNotificationDetail(
+                context,
+                notification,
+              ),
               child: ListTile(
                 leading: Icon(
                   notification.icon,
-                  color: style.leadingIconColor,
+                  color: Colors.grey,
                 ),
                 title: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,7 +101,11 @@ class CustomNotificationWidget extends StatelessWidget {
                     Expanded(
                       child: Text(
                         notification.title,
-                        style: style.titleTextStyle,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
                   ],
