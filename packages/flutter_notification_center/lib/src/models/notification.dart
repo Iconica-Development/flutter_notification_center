@@ -85,7 +85,7 @@ class NotificationModel {
   final OcurringInterval? occuringInterval;
 
   /// Indicates if the notification is pinned.
-  final bool isPinned;
+  bool isPinned;
 
   /// Indicates if the notification has been read.
   bool isRead;

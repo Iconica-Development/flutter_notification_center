@@ -165,6 +165,21 @@ class FirebaseNotificationService
   }
 
   @override
+  Future<void> pinActiveNotification(
+      NotificationModel notificationModel) async {
+    try {
+      DocumentReference documentReference = FirebaseFirestore.instance
+          .collection(FirebaseCollectionNames.activeNotifications)
+          .doc(notificationModel.id);
+      await documentReference.update({'isPinned': true});
+      notificationModel.isPinned = true;
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error updating document: $e');
+    }
+  }
+
+  @override
   Future<void> markNotificationAsRead(
       NotificationModel notificationModel) async {
     try {
