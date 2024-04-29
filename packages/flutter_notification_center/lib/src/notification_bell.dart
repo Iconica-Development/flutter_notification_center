@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-import "package:flutter_animated_widgets/flutter_animated_widgets.dart";
 import "../flutter_notification_center.dart";
 
 /// A bell icon widget that displays the number of active notifications.
@@ -55,7 +54,7 @@ class _NotificationBellState extends State<NotificationBell> {
         icon: AnimatedNotificationBell(
           duration: const Duration(seconds: 1),
           notificationCount: notificationAmount,
-          notificationIconSize: 45,
+          style: widget.config.bellStyle,
         ),
       );
 }
