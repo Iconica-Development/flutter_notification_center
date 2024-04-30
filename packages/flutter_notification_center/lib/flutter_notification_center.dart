@@ -14,3 +14,4 @@ export "src/notification_detail.dart";
 export "src/notification_bell_story.dart";
 export "src/notification_center.dart";
 export "src/services/notification_service.dart";
+export "package:flutter_animated_widgets/flutter_animated_widgets.dart";

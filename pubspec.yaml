@@ -17,7 +17,7 @@ dependencies:
   flutter_animated_widgets:
     git:
       url: https://github.com/Iconica-Development/flutter_animated_widgets
-      ref: 0.0.1  
+      ref: 0.1.1 
 
 dev_dependencies:
   flutter_test:

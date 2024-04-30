@@ -1,4 +1,9 @@
-## [1.3.0] - 30 April 2024
+## [1.3.1] - 30 April 2024
+
+* Fix Animationcontroller not disposing correctly.
+* Updated flutter_animated_widgets to 0.1.1
+
+## [1.3.0] - 23 April 2024
 
 * Fix issue with pubspec in flutter_notification_center_firebase
 
