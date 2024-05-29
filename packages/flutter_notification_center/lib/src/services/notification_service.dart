@@ -47,9 +47,15 @@ abstract class NotificationService with ChangeNotifier {
   /// Pin an active notification.
   Future pinActiveNotification(NotificationModel notification);
 
+  /// Unpin an active notification.
+  Future unPinActiveNotification(NotificationModel notification);
+
   /// Marks a notification as read.
   Future markNotificationAsRead(NotificationModel notification);
 
   /// Checks for scheduled notifications.
   Future checkForScheduledNotifications();
+
+  /// Returns a stream of the number of active notifications.
+  Stream<int> getActiveAmountStream();
 }

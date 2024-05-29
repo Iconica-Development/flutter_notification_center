@@ -49,4 +49,4 @@ app.*.map.json
 lib/config/
 pubspec.lock
 dotenv
-
+firebase_options.dart

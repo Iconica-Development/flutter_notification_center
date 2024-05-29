@@ -1,0 +1,17 @@
+version: 2
+
+updates:
+  - package-ecosystem: "pub"
+    directory: "/packages/flutter_notification_center"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pub"
+    directory: "/packages/flutter_notification_center_firebase"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pub"
+    directory: "/packages/flutter_notification_center/example"
+    schedule:
+      interval: "weekly"

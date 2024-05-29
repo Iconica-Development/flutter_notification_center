@@ -2,7 +2,7 @@ name: flutter_notification_center
 description: "A Flutter package for displaying notifications in a notification center."
 publish_to: 'none' 
 
-version: 1.3.1
+version: 1.4.0
 
 environment:
   sdk: '>=3.3.2 <4.0.0'
