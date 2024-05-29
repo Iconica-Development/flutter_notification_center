@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_notification_center/flutter_notification_center.dart';
 import 'package:intl/intl.dart';
 
 class NotificationSnackbar extends SnackBar {
@@ -6,6 +7,8 @@ class NotificationSnackbar extends SnackBar {
     super.key,
     required String title,
     required String body,
+    required NotificationTranslations translations,
+    required VoidCallback onDismiss,
     DateTime? datetimePublished,
   }) : super(
           content: Column(
@@ -31,7 +34,7 @@ class NotificationSnackbar extends SnackBar {
               Text(
                 datetimePublished != null
                     ? DateFormat('dd MMM HH:mm').format(datetimePublished)
-                    : 'N/A',
+                    : translations.notAvailable,
                 style: const TextStyle(
                   fontSize: 12.0,
                   color: Colors.white,
@@ -39,10 +42,10 @@ class NotificationSnackbar extends SnackBar {
               ),
             ],
           ),
-          duration: const Duration(seconds: 8),
+          duration: const Duration(seconds: 50),
           action: SnackBarAction(
-            label: 'Dismiss',
-            onPressed: () {},
+            label: translations.dissmissDialog,
+            onPressed: onDismiss,
             textColor: Colors.white,
           ),
         );

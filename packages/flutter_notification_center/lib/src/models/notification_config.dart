@@ -13,7 +13,7 @@ class NotificationConfig {
   const NotificationConfig({
     required this.service,
     this.seperateNotificationsWithDivider = true,
-    this.translations = const NotificationTranslations(),
+    this.translations = const NotificationTranslations.empty(),
     this.notificationWidgetBuilder,
     this.showAsSnackBar = true,
     this.enableNotificationPopups = true,

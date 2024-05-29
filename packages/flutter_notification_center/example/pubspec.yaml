@@ -14,24 +14,17 @@ dependencies:
     sdk: flutter
   intl: ^0.17.0
 
-  flutter_animated_widgets:
-    git:
-      url: https://github.com/Iconica-Development/flutter_animated_widgets
-      ref: 0.0.1  
-  cloud_firestore: ^4.16.1
-
-  flutter_dotenv: ^5.0.2
-  firebase_auth: ^4.2.6
-  firebase_core: ^2.5.0
-  firebase_storage: ^11.0.14
-
   flutter_notification_center:
     git:
       url: https://github.com/Iconica-Development/flutter_notification_center
-      ref: 1.3.0
+      ref: 1.4.0
       path: packages/flutter_notification_center
+
   flutter_notification_center_firebase:
-    path: ../../flutter_notification_center_firebase
+    git:
+      url: https://github.com/Iconica-Development/flutter_notification_center
+      ref: 1.4.0
+      path: packages/flutter_notification_center_firebase
 
 
 
@@ -46,6 +39,4 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   uses-material-design: true
-  assets:
-    - dotenv
 

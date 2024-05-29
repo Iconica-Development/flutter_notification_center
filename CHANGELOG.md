@@ -1,3 +1,14 @@
+## [1.4.0] - 29 May 2024
+
+* Make notifications user bound and not app bound (https://github.com/Iconica-Development/flutter_notification_center/issues/8)
+* Fix indicator amount of bell icon (https://github.com/Iconica-Development/flutter_notification_center/issues/10)
+* Add unpin functionality (https://github.com/Iconica-Development/flutter_notification_center/issues/15)
+* Change color of bin icon (https://github.com/Iconica-Development/flutter_notification_center/issues/19)
+* Fix multiple dialog and snackbars stacking on top
+* Fix notification center updating when new notifications come in and the screen is open
+* Fix sorting of all notifications
+* Fix pinned notifications should remain on top
+
 ## [1.3.1] - 30 April 2024
 
 * Fix Animationcontroller not disposing correctly.

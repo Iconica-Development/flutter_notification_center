@@ -1,14 +1,19 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_notification_center/flutter_notification_center.dart';
-import '../config/firebase_collections.dart';
 
 class FirebaseNotificationService
     with ChangeNotifier
     implements NotificationService {
   final Function(NotificationModel) newNotificationCallback;
+  final FirebaseApp? firebaseApp;
+  final String activeNotificationsCollection;
+  final String plannedNotificationsCollection;
+  late FirebaseApp _firebaseApp;
 
   @override
   List<NotificationModel> listOfActiveNotifications;
@@ -18,10 +23,15 @@ class FirebaseNotificationService
   // ignore: unused_field
   late Timer _timer;
 
-  FirebaseNotificationService(
-      {required this.newNotificationCallback,
-      this.listOfActiveNotifications = const [],
-      this.listOfPlannedNotifications = const []}) {
+  FirebaseNotificationService({
+    required this.newNotificationCallback,
+    this.firebaseApp,
+    this.activeNotificationsCollection = 'active_notifications',
+    this.plannedNotificationsCollection = 'planned_notifications',
+    this.listOfActiveNotifications = const [],
+    this.listOfPlannedNotifications = const [],
+  }) {
+    _firebaseApp = firebaseApp ?? Firebase.app();
     _startTimer();
   }
 
@@ -36,15 +46,25 @@ class FirebaseNotificationService
   Future<void> pushNotification(NotificationModel notification,
       [Function(NotificationModel model)? onNewNotification]) async {
     try {
-      CollectionReference notifications = FirebaseFirestore.instance
-          .collection(FirebaseCollectionNames.activeNotifications);
+      var userId = FirebaseAuth.instanceFor(app: _firebaseApp).currentUser?.uid;
+
+      if (userId == null) {
+        debugPrint('User is not authenticated');
+        return;
+      }
+
+      CollectionReference notifications =
+          FirebaseFirestore.instanceFor(app: _firebaseApp)
+              .collection(activeNotificationsCollection)
+              .doc(userId)
+              .collection(activeNotificationsCollection);
 
       DateTime currentDateTime = DateTime.now();
       notification.dateTimePushed = currentDateTime;
       Map<String, dynamic> notificationMap = notification.toMap();
       await notifications.doc(notification.id).set(notificationMap);
 
-      listOfActiveNotifications.add(notification);
+      listOfActiveNotifications = [...listOfActiveNotifications, notification];
 
       //Show popup with notification conte
       if (onNewNotification != null) {
@@ -62,11 +82,20 @@ class FirebaseNotificationService
   @override
   Future<List<NotificationModel>> getActiveNotifications() async {
     try {
-      CollectionReference activeNotificationsCollection = FirebaseFirestore
-          .instance
-          .collection(FirebaseCollectionNames.activeNotifications);
+      var userId = FirebaseAuth.instanceFor(app: _firebaseApp).currentUser?.uid;
 
-      QuerySnapshot querySnapshot = await activeNotificationsCollection.get();
+      if (userId == null) {
+        debugPrint('User is not authenticated');
+        return [];
+      }
+
+      CollectionReference activeNotificationsResult =
+          FirebaseFirestore.instanceFor(app: _firebaseApp)
+              .collection(activeNotificationsCollection)
+              .doc(userId)
+              .collection(activeNotificationsCollection);
+
+      QuerySnapshot querySnapshot = await activeNotificationsResult.get();
 
       List<NotificationModel> activeNotifications =
           querySnapshot.docs.map((doc) {
@@ -75,7 +104,18 @@ class FirebaseNotificationService
         return NotificationModel.fromJson(data);
       }).toList();
 
-      listOfActiveNotifications = activeNotifications;
+      listOfActiveNotifications = List.from(activeNotifications);
+
+      listOfActiveNotifications.removeWhere((element) => element.isPinned);
+      activeNotifications
+          .sort((a, b) => b.dateTimePushed!.compareTo(a.dateTimePushed!));
+
+      listOfActiveNotifications
+          .sort((a, b) => b.dateTimePushed!.compareTo(a.dateTimePushed!));
+
+      listOfActiveNotifications.insertAll(
+          0, activeNotifications.where((element) => element.isPinned));
+
       notifyListeners();
       return listOfActiveNotifications;
     } catch (e) {
@@ -115,8 +155,19 @@ class FirebaseNotificationService
   Future<void> createScheduledNotification(
       NotificationModel notification) async {
     try {
-      CollectionReference plannedNotifications = FirebaseFirestore.instance
-          .collection(FirebaseCollectionNames.plannedNotifications);
+      var userId = FirebaseAuth.instanceFor(app: _firebaseApp).currentUser?.uid;
+
+      if (userId == null) {
+        debugPrint('User is not authenticated');
+        return;
+      }
+
+      CollectionReference plannedNotifications =
+          FirebaseFirestore.instanceFor(app: _firebaseApp)
+              .collection(plannedNotificationsCollection)
+              .doc(userId)
+              .collection(plannedNotificationsCollection);
+
       Map<String, dynamic> notificationMap = notification.toMap();
       await plannedNotifications.doc(notification.id).set(notificationMap);
     } catch (e) {
@@ -128,14 +179,27 @@ class FirebaseNotificationService
   Future<void> deletePlannedNotification(
       NotificationModel notificationModel) async {
     try {
-      DocumentReference documentReference = FirebaseFirestore.instance
-          .collection(FirebaseCollectionNames.plannedNotifications)
-          .doc(notificationModel.id);
+      var userId = FirebaseAuth.instanceFor(app: _firebaseApp).currentUser?.uid;
+
+      if (userId == null) {
+        debugPrint('User is not authenticated');
+        return;
+      }
+
+      DocumentReference documentReference =
+          FirebaseFirestore.instanceFor(app: _firebaseApp)
+              .collection(plannedNotificationsCollection)
+              .doc(userId)
+              .collection(plannedNotificationsCollection)
+              .doc(notificationModel.id);
       await documentReference.delete();
 
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection(FirebaseCollectionNames.plannedNotifications)
-          .get();
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instanceFor(app: _firebaseApp)
+              .collection(plannedNotificationsCollection)
+              .doc(userId)
+              .collection(plannedNotificationsCollection)
+              .get();
 
       if (querySnapshot.docs.isEmpty) {
         debugPrint('The collection is now empty');
@@ -152,9 +216,19 @@ class FirebaseNotificationService
   Future<void> dismissActiveNotification(
       NotificationModel notificationModel) async {
     try {
-      DocumentReference documentReference = FirebaseFirestore.instance
-          .collection(FirebaseCollectionNames.activeNotifications)
-          .doc(notificationModel.id);
+      var userId = FirebaseAuth.instanceFor(app: _firebaseApp).currentUser?.uid;
+
+      if (userId == null) {
+        debugPrint('User is not authenticated');
+        return;
+      }
+
+      DocumentReference documentReference =
+          FirebaseFirestore.instanceFor(app: _firebaseApp)
+              .collection(activeNotificationsCollection)
+              .doc(userId)
+              .collection(activeNotificationsCollection)
+              .doc(notificationModel.id);
       await documentReference.delete();
       listOfActiveNotifications
           .removeAt(listOfActiveNotifications.indexOf(notificationModel));
@@ -168,11 +242,57 @@ class FirebaseNotificationService
   Future<void> pinActiveNotification(
       NotificationModel notificationModel) async {
     try {
-      DocumentReference documentReference = FirebaseFirestore.instance
-          .collection(FirebaseCollectionNames.activeNotifications)
-          .doc(notificationModel.id);
+      var userId = FirebaseAuth.instanceFor(app: _firebaseApp).currentUser?.uid;
+
+      if (userId == null) {
+        debugPrint('User is not authenticated');
+        return;
+      }
+
+      DocumentReference documentReference =
+          FirebaseFirestore.instanceFor(app: _firebaseApp)
+              .collection(activeNotificationsCollection)
+              .doc(userId)
+              .collection(activeNotificationsCollection)
+              .doc(notificationModel.id);
       await documentReference.update({'isPinned': true});
       notificationModel.isPinned = true;
+
+      listOfActiveNotifications
+          .removeAt(listOfActiveNotifications.indexOf(notificationModel));
+      listOfActiveNotifications.insert(0, notificationModel);
+
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error updating document: $e');
+    }
+  }
+
+  @override
+  Future<void> unPinActiveNotification(
+      NotificationModel notificationModel) async {
+    try {
+      var userId = FirebaseAuth.instanceFor(app: _firebaseApp).currentUser?.uid;
+
+      if (userId == null) {
+        debugPrint('User is not authenticated');
+        return;
+      }
+
+      DocumentReference documentReference =
+          FirebaseFirestore.instanceFor(app: _firebaseApp)
+              .collection(activeNotificationsCollection)
+              .doc(userId)
+              .collection(activeNotificationsCollection)
+              .doc(notificationModel.id);
+      await documentReference.update({'isPinned': false});
+      notificationModel.isPinned = false;
+
+      listOfActiveNotifications
+          .removeAt(listOfActiveNotifications.indexOf(notificationModel));
+
+      listOfActiveNotifications.add(notificationModel);
+
       notifyListeners();
     } catch (e) {
       debugPrint('Error updating document: $e');
@@ -183,9 +303,19 @@ class FirebaseNotificationService
   Future<void> markNotificationAsRead(
       NotificationModel notificationModel) async {
     try {
-      DocumentReference documentReference = FirebaseFirestore.instance
-          .collection(FirebaseCollectionNames.activeNotifications)
-          .doc(notificationModel.id);
+      var userId = FirebaseAuth.instanceFor(app: _firebaseApp).currentUser?.uid;
+
+      if (userId == null) {
+        debugPrint('User is not authenticated');
+        return;
+      }
+
+      DocumentReference documentReference =
+          FirebaseFirestore.instanceFor(app: _firebaseApp)
+              .collection(activeNotificationsCollection)
+              .doc(userId)
+              .collection(activeNotificationsCollection)
+              .doc(notificationModel.id);
       await documentReference.update({'isRead': true});
       notificationModel.isRead = true;
       notifyListeners();
@@ -198,11 +328,20 @@ class FirebaseNotificationService
   Future<void> checkForScheduledNotifications() async {
     DateTime currentTime = DateTime.now();
     try {
-      CollectionReference plannedNotificationsCollection = FirebaseFirestore
-          .instance
-          .collection(FirebaseCollectionNames.plannedNotifications);
+      var userId = FirebaseAuth.instanceFor(app: _firebaseApp).currentUser?.uid;
 
-      QuerySnapshot querySnapshot = await plannedNotificationsCollection.get();
+      if (userId == null) {
+        debugPrint('User is not authenticated');
+        return;
+      }
+
+      CollectionReference plannedNotificationsResult =
+          FirebaseFirestore.instanceFor(app: _firebaseApp)
+              .collection(plannedNotificationsCollection)
+              .doc(userId)
+              .collection(plannedNotificationsCollection);
+
+      QuerySnapshot querySnapshot = await plannedNotificationsResult.get();
 
       if (querySnapshot.docs.isEmpty) {
         debugPrint('No scheduled notifications to be pushed');
@@ -240,5 +379,23 @@ class FirebaseNotificationService
       debugPrint('Error getting planned notifications: $e');
       return;
     }
+  }
+
+  @override
+  Stream<int> getActiveAmountStream() async* {
+    var userId = FirebaseAuth.instanceFor(app: _firebaseApp).currentUser?.uid;
+
+    if (userId == null) {
+      debugPrint('User is not authenticated');
+      yield 0;
+    }
+
+    var amount = FirebaseFirestore.instanceFor(app: _firebaseApp)
+        .collection(activeNotificationsCollection)
+        .doc(userId)
+        .collection(activeNotificationsCollection)
+        .snapshots()
+        .map((e) => e.docs.length);
+    yield* amount;
   }
 }

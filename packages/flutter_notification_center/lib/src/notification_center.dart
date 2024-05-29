@@ -27,6 +27,9 @@ class NotificationCenterState extends State<NotificationCenter> {
     super.initState();
     // ignore: discarded_futures
     _notificationsFuture = widget.config.service.getActiveNotifications();
+    widget.config.service.getActiveAmountStream().listen((amount) {
+      _notificationsFuture = widget.config.service.getActiveNotifications();
+    });
     widget.config.service.addListener(_listener);
   }
 
@@ -60,10 +63,12 @@ class NotificationCenterState extends State<NotificationCenter> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
-              return Center(child: Text("Error: ${snapshot.error}"));
+              debugPrint("Error: ${snapshot.error}");
+              return Center(
+                  child: Text(widget.config.translations.errorMessage));
             } else if (snapshot.data == null || snapshot.data!.isEmpty) {
-              return const Center(
-                child: Text("No unread notifications available."),
+              return Center(
+                child: Text(widget.config.translations.noNotifications),
               );
             } else {
               return ListView.builder(
@@ -88,47 +93,81 @@ class NotificationCenterState extends State<NotificationCenter> {
                               notification, context)
                           : notification.isPinned
                               //Pinned notification
-                              ? GestureDetector(
-                                  onTap: () async =>
-                                      _navigateToNotificationDetail(
-                                          context,
-                                          notification,
-                                          widget.config.service,
-                                          widget.config.translations,
-                                          const NotificationStyle()),
-                                  child: ListTile(
-                                    leading: Icon(
-                                      notification.icon,
-                                      color: Colors.grey,
+                              ? Dismissible(
+                                  key: Key('${notification.id}_pinned'),
+                                  onDismissed: (direction) async {
+                                    await unPinNotification(
+                                        widget.config.service,
+                                        notification,
+                                        widget.config.translations,
+                                        context);
+                                  },
+                                  background: Container(
+                                    color:
+                                        const Color.fromRGBO(59, 213, 111, 1),
+                                    alignment: Alignment.centerLeft,
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(left: 16.0),
+                                      child: Icon(
+                                        Icons.push_pin,
+                                        color: Colors.white,
+                                      ),
                                     ),
-                                    title: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            notification.title,
-                                            style: const TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 16,
+                                  ),
+                                  secondaryBackground: Container(
+                                    color:
+                                        const Color.fromRGBO(59, 213, 111, 1),
+                                    alignment: Alignment.centerLeft,
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(left: 16.0),
+                                      child: Icon(
+                                        Icons.push_pin,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  child: GestureDetector(
+                                    onTap: () async =>
+                                        _navigateToNotificationDetail(
+                                            context,
+                                            notification,
+                                            widget.config.service,
+                                            widget.config.translations,
+                                            const NotificationStyle()),
+                                    child: ListTile(
+                                      leading: Icon(
+                                        notification.icon,
+                                        color: Colors.grey,
+                                      ),
+                                      title: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              notification.title,
+                                              style: const TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 16,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    trailing: IconButton(
-                                      icon: const Icon(Icons.push_pin),
-                                      color: Colors.grey,
-                                      onPressed: () async =>
-                                          _navigateToNotificationDetail(
-                                              context,
-                                              notification,
-                                              widget.config.service,
-                                              widget.config.translations,
-                                              const NotificationStyle()),
-                                      padding:
-                                          const EdgeInsets.only(left: 60.0),
+                                        ],
+                                      ),
+                                      trailing: IconButton(
+                                        icon: const Icon(Icons.push_pin),
+                                        color: Colors.grey,
+                                        onPressed: () async =>
+                                            _navigateToNotificationDetail(
+                                                context,
+                                                notification,
+                                                widget.config.service,
+                                                widget.config.translations,
+                                                const NotificationStyle()),
+                                        padding:
+                                            const EdgeInsets.only(left: 60.0),
+                                      ),
                                     ),
                                   ),
                                 )
@@ -141,12 +180,14 @@ class NotificationCenterState extends State<NotificationCenter> {
                                       await dismissNotification(
                                           widget.config.service,
                                           notification,
+                                          widget.config.translations,
                                           context);
                                     } else if (direction ==
                                         DismissDirection.startToEnd) {
                                       await pinNotification(
                                           widget.config.service,
                                           notification,
+                                          widget.config.translations,
                                           context);
                                     }
                                   },
@@ -170,7 +211,7 @@ class NotificationCenterState extends State<NotificationCenter> {
                                       padding: EdgeInsets.only(right: 16.0),
                                       child: Icon(
                                         Icons.delete,
-                                        color: Colors.white,
+                                        color: Colors.black,
                                       ),
                                     ),
                                   ),
@@ -251,13 +292,15 @@ Future<void> _navigateToNotificationDetail(
 Future<void> dismissNotification(
   NotificationService notificationService,
   NotificationModel notification,
+  NotificationTranslations notificationTranslations,
   BuildContext context,
 ) async {
   await notificationService.dismissActiveNotification(notification);
   if (context.mounted) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Notification dismissed"),
+      SnackBar(
+        content: Text(notificationTranslations.notificationDismissed),
       ),
     );
   }
@@ -266,13 +309,32 @@ Future<void> dismissNotification(
 Future<void> pinNotification(
   NotificationService notificationService,
   NotificationModel notification,
+  NotificationTranslations notificationTranslations,
   BuildContext context,
 ) async {
   await notificationService.pinActiveNotification(notification);
   if (context.mounted) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Notification pinned"),
+      SnackBar(
+        content: Text(notificationTranslations.notificationPinned),
+      ),
+    );
+  }
+}
+
+Future<void> unPinNotification(
+  NotificationService notificationService,
+  NotificationModel notification,
+  NotificationTranslations notificationTranslations,
+  BuildContext context,
+) async {
+  await notificationService.unPinActiveNotification(notification);
+  if (context.mounted) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(notificationTranslations.notificationUnpinned),
       ),
     );
   }

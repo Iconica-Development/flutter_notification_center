@@ -37,13 +37,9 @@ class _NotificationBellState extends State<NotificationBell> {
   @override
   void initState() {
     super.initState();
-
-    // Fetch active notifications and update the notification count
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      var amount = await widget.config.service.getActiveNotifications();
-
+    widget.config.service.getActiveAmountStream().listen((amount) {
       setState(() {
-        notificationAmount = amount.length;
+        notificationAmount = amount;
       });
     });
   }

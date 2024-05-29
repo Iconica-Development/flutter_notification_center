@@ -53,7 +53,7 @@ class NotificationDetailPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  'Date: ${DateFormat('yyyy-MM-dd HH:mm').format(
+                  '${translations.datePrefix} ${DateFormat('yyyy-MM-dd HH:mm').format(
                     notification.dateTimePushed ?? DateTime.now(),
                   )}',
                   style: const TextStyle(

@@ -1,8 +1,9 @@
 import 'package:example/custom_notification.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:example/firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_notification_center_firebase/flutter_notification_center_firebase.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_notification_center/flutter_notification_center.dart';
@@ -21,14 +22,9 @@ void main() async {
 }
 
 Future<void> _configureApp() async {
-  try {
-    await dotenv.load(fileName: 'dotenv');
-  } catch (e) {
-    debugPrint('Failed to load dotenv file: $e');
-  }
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  // await Firebase.initializeApp(
+  // options: DefaultFirebaseOptions.currentPlatform,
+  // );
   await SystemChrome.setPreferredOrientations(
     [
       DeviceOrientation.portraitDown,
@@ -55,14 +51,15 @@ class _NotificationCenterDemoState extends State<NotificationCenterDemo> {
   @override
   void initState() {
     super.initState();
-    var service =
-        FirebaseNotificationService(newNotificationCallback: (notification) {
-      popupHandler.handleNotificationPopup(notification);
-    });
+    var service = FirebaseNotificationService(
+      newNotificationCallback: (notification) {
+        popupHandler.handleNotificationPopup(notification);
+      },
+    );
     config = NotificationConfig(
       service: service,
       enableNotificationPopups: true,
-      showAsSnackBar: false,
+      showAsSnackBar: true,
       notificationWidgetBuilder: (notification, context) =>
           CustomNotificationWidget(
         notification: notification,
@@ -82,7 +79,7 @@ class _NotificationCenterDemoState extends State<NotificationCenterDemo> {
           showNotificationIcon: true,
         ),
         notificationService: service,
-        notificationTranslations: const NotificationTranslations(),
+        notificationTranslations: const NotificationTranslations.empty(),
         context: context,
       ),
       seperateNotificationsWithDivider: true,
