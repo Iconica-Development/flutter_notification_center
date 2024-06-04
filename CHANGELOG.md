@@ -1,3 +1,8 @@
+## [1.4.1] - 4 June 2024
+
+* Fix notification amount number to properly size and show plus icon when above certain amount
+
+
 ## [1.4.0] - 29 May 2024
 
 * Make notifications user bound and not app bound (https://github.com/Iconica-Development/flutter_notification_center/issues/8)
