@@ -1,14 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_notification_center/flutter_notification_center.dart';
-import 'package:intl/intl.dart';
+import "package:flutter/material.dart";
+import "package:flutter_notification_center/flutter_notification_center.dart";
+import "package:intl/intl.dart";
 
 class NotificationSnackbar extends SnackBar {
   NotificationSnackbar({
-    super.key,
     required String title,
     required String body,
     required NotificationTranslations translations,
     required VoidCallback onDismiss,
+    super.key,
     DateTime? datetimePublished,
   }) : super(
           content: Column(
@@ -33,7 +33,7 @@ class NotificationSnackbar extends SnackBar {
               const SizedBox(height: 4),
               Text(
                 datetimePublished != null
-                    ? DateFormat('dd MMM HH:mm').format(datetimePublished)
+                    ? DateFormat("dd-MM-yyyy HH:mm").format(datetimePublished)
                     : translations.notAvailable,
                 style: const TextStyle(
                   fontSize: 12.0,

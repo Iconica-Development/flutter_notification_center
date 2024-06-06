@@ -1,25 +1,24 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_notification_center/flutter_notification_center.dart';
-import 'package:intl/intl.dart';
+import "package:flutter/material.dart";
+import "package:flutter_notification_center/flutter_notification_center.dart";
+import "package:intl/intl.dart";
 
 class NotificationDialog extends StatelessWidget {
+  const NotificationDialog({
+    required this.title,
+    required this.body,
+    required this.translations,
+    super.key,
+    this.datetimePublished,
+  });
   final String title;
   final String body;
   final DateTime? datetimePublished;
   final NotificationTranslations translations;
 
-  const NotificationDialog({
-    super.key,
-    required this.title,
-    required this.body,
-    required this.translations,
-    this.datetimePublished,
-  });
-
   @override
   Widget build(BuildContext context) {
-    String formattedDateTime = datetimePublished != null
-        ? DateFormat('dd MMM HH:mm').format(datetimePublished!)
+    var formattedDateTime = datetimePublished != null
+        ? DateFormat("dd MMM HH:mm").format(datetimePublished!)
         : translations.notAvailable;
 
     return AlertDialog(
