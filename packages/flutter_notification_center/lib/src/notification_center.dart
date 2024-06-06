@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
-import '../flutter_notification_center.dart';
+import "package:flutter/material.dart";
+import "package:flutter_notification_center/flutter_notification_center.dart";
+import "package:intl/intl.dart";
 
 /// Widget for displaying the notification center.
 class NotificationCenter extends StatefulWidget {
@@ -27,7 +28,7 @@ class NotificationCenterState extends State<NotificationCenter> {
     super.initState();
     // ignore: discarded_futures
     _notificationsFuture = widget.config.service.getActiveNotifications();
-    widget.config.service.getActiveAmountStream().listen((amount) {
+    widget.config.service.getActiveAmountStream().listen((amount) async {
       _notificationsFuture = widget.config.service.getActiveNotifications();
     });
     widget.config.service.addListener(_listener);
@@ -44,227 +45,269 @@ class NotificationCenterState extends State<NotificationCenter> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Text(
-            widget.config.translations.appBarTitle,
-          ),
-          centerTitle: true,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
+  Widget build(BuildContext context) {
+    var theme = Theme.of(context);
+    return Scaffold(
+      backgroundColor: theme.colorScheme.surface,
+      appBar: AppBar(
+        backgroundColor: theme.appBarTheme.backgroundColor,
+        title: Text(
+          widget.config.translations.appBarTitle,
+          style: theme.appBarTheme.titleTextStyle,
         ),
-        body: FutureBuilder<List<NotificationModel>>(
-          future: _notificationsFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              debugPrint("Error: ${snapshot.error}");
-              return Center(
-                  child: Text(widget.config.translations.errorMessage));
-            } else if (snapshot.data == null || snapshot.data!.isEmpty) {
-              return Center(
-                child: Text(widget.config.translations.noNotifications),
-              );
-            } else {
-              return ListView.builder(
-                itemCount: snapshot.data!.length * 2 - 1,
-                itemBuilder: (context, index) {
-                  if (index.isOdd) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                      child: widget.config.seperateNotificationsWithDivider
-                          ? const Divider(
-                              color: Colors.grey,
-                              thickness: 1.0,
-                            )
-                          : Container(),
-                    );
-                  }
-                  var notification = snapshot.data![index ~/ 2];
-                  return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                      child: widget.config.notificationWidgetBuilder != null
-                          ? widget.config.notificationWidgetBuilder!(
-                              notification, context)
-                          : notification.isPinned
-                              //Pinned notification
-                              ? Dismissible(
-                                  key: Key('${notification.id}_pinned'),
-                                  onDismissed: (direction) async {
-                                    await unPinNotification(
-                                        widget.config.service,
-                                        notification,
-                                        widget.config.translations,
-                                        context);
-                                  },
-                                  background: Container(
-                                    color:
-                                        const Color.fromRGBO(59, 213, 111, 1),
-                                    alignment: Alignment.centerLeft,
-                                    child: const Padding(
-                                      padding: EdgeInsets.only(left: 16.0),
-                                      child: Icon(
-                                        Icons.push_pin,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                  secondaryBackground: Container(
-                                    color:
-                                        const Color.fromRGBO(59, 213, 111, 1),
-                                    alignment: Alignment.centerLeft,
-                                    child: const Padding(
-                                      padding: EdgeInsets.only(left: 16.0),
-                                      child: Icon(
-                                        Icons.push_pin,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                  child: GestureDetector(
-                                    onTap: () async =>
-                                        _navigateToNotificationDetail(
-                                            context,
-                                            notification,
-                                            widget.config.service,
-                                            widget.config.translations,
-                                            const NotificationStyle()),
-                                    child: ListTile(
-                                      leading: Icon(
-                                        notification.icon,
-                                        color: Colors.grey,
-                                      ),
-                                      title: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              notification.title,
-                                              style: const TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 16,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      trailing: IconButton(
-                                        icon: const Icon(Icons.push_pin),
-                                        color: Colors.grey,
-                                        onPressed: () async =>
-                                            _navigateToNotificationDetail(
-                                                context,
-                                                notification,
-                                                widget.config.service,
-                                                widget.config.translations,
-                                                const NotificationStyle()),
-                                        padding:
-                                            const EdgeInsets.only(left: 60.0),
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              //Dismissable notification
-                              : Dismissible(
-                                  key: Key(notification.id),
-                                  onDismissed: (direction) async {
-                                    if (direction ==
-                                        DismissDirection.endToStart) {
-                                      await dismissNotification(
-                                          widget.config.service,
-                                          notification,
-                                          widget.config.translations,
-                                          context);
-                                    } else if (direction ==
-                                        DismissDirection.startToEnd) {
-                                      await pinNotification(
-                                          widget.config.service,
-                                          notification,
-                                          widget.config.translations,
-                                          context);
-                                    }
-                                  },
-                                  background: Container(
-                                    color:
-                                        const Color.fromRGBO(59, 213, 111, 1),
-                                    alignment: Alignment.centerLeft,
-                                    child: const Padding(
-                                      padding: EdgeInsets.only(left: 16.0),
-                                      child: Icon(
-                                        Icons.push_pin,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                  secondaryBackground: Container(
-                                    color:
-                                        const Color.fromRGBO(255, 131, 131, 1),
-                                    alignment: Alignment.centerRight,
-                                    child: const Padding(
-                                      padding: EdgeInsets.only(right: 16.0),
-                                      child: Icon(
-                                        Icons.delete,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ),
-                                  child: GestureDetector(
-                                    onTap: () async =>
-                                        _navigateToNotificationDetail(
-                                            context,
-                                            notification,
-                                            widget.config.service,
-                                            widget.config.translations,
-                                            const NotificationStyle()),
-                                    child: ListTile(
-                                      leading: Icon(
-                                        notification.icon,
-                                        color: Colors.grey,
-                                      ),
-                                      title: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              notification.title,
-                                              style: const TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 16,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      trailing: !notification.isRead
-                                          ? Container(
-                                              margin: const EdgeInsets.only(
-                                                  right: 8.0),
-                                              width: 12.0,
-                                              height: 12.0,
-                                              decoration: const BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: Colors.red,
-                                              ),
-                                            )
-                                          : null,
-                                    ),
-                                  ),
-                                ));
-                },
-              );
-            }
+        centerTitle: true,
+        iconTheme: theme.appBarTheme.iconTheme ??
+            const IconThemeData(color: Colors.white),
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
           },
+          child: const Icon(
+            Icons.arrow_back_ios,
+          ),
         ),
-      );
+      ),
+      body: FutureBuilder<List<NotificationModel>>(
+        future: _notificationsFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            debugPrint("Error: ${snapshot.error}");
+            return Center(child: Text(widget.config.translations.errorMessage));
+          } else if (snapshot.data == null || snapshot.data!.isEmpty) {
+            return Center(
+              child: Text(widget.config.translations.noNotifications),
+            );
+          } else {
+            return ListView.builder(
+              padding: const EdgeInsets.symmetric(
+                vertical: 20,
+                horizontal: 20,
+              ),
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                var notification = snapshot.data![index];
+                return notification.isPinned
+                    ? GestureDetector(
+                        onTap: () async => _navigateToNotificationDetail(
+                          context,
+                          notification,
+                          widget.config.service,
+                          widget.config.translations,
+                          const NotificationStyle(),
+                        ),
+                        child: Dismissible(
+                          key: Key("${notification.id}_pinned"),
+                          onDismissed: (direction) async {
+                            if (direction == DismissDirection.endToStart) {
+                              await unPinNotification(
+                                widget.config.service,
+                                notification,
+                                widget.config.translations,
+                                context,
+                              );
+                            } else if (direction ==
+                                DismissDirection.startToEnd) {
+                              await unPinNotification(
+                                widget.config.service,
+                                notification,
+                                widget.config.translations,
+                                context,
+                              );
+                            }
+                          },
+                          background: Container(
+                            decoration: const BoxDecoration(
+                              color: Color.fromRGBO(59, 213, 111, 1),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(6),
+                                bottomLeft: Radius.circular(6),
+                              ),
+                            ),
+                            alignment: Alignment.centerLeft,
+                            child: const Padding(
+                              padding: EdgeInsets.only(left: 16.0),
+                              child: Icon(
+                                Icons.push_pin,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          secondaryBackground: Container(
+                            decoration: const BoxDecoration(
+                              color: Color.fromRGBO(59, 213, 111, 1),
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(6),
+                                bottomRight: Radius.circular(6),
+                              ),
+                            ),
+                            alignment: Alignment.centerRight,
+                            child: const Padding(
+                              padding: EdgeInsets.only(right: 16.0),
+                              child: Icon(
+                                Icons.push_pin,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          child: _notificationItem(
+                            context,
+                            notification,
+                          ),
+                        ),
+                      )
+                    : GestureDetector(
+                        onTap: () async => _navigateToNotificationDetail(
+                          context,
+                          notification,
+                          widget.config.service,
+                          widget.config.translations,
+                          const NotificationStyle(),
+                        ),
+                        child: Dismissible(
+                          key: Key(notification.id),
+                          onDismissed: (direction) async {
+                            if (direction == DismissDirection.endToStart) {
+                              await dismissNotification(
+                                widget.config.service,
+                                notification,
+                                widget.config.translations,
+                                context,
+                              );
+                            } else if (direction ==
+                                DismissDirection.startToEnd) {
+                              await pinNotification(
+                                widget.config.service,
+                                notification,
+                                widget.config.translations,
+                                context,
+                              );
+                            }
+                          },
+                          background: Container(
+                            decoration: const BoxDecoration(
+                              color: Color.fromRGBO(59, 213, 111, 1),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(6),
+                                bottomLeft: Radius.circular(6),
+                              ),
+                            ),
+                            alignment: Alignment.centerLeft,
+                            child: const Padding(
+                              padding: EdgeInsets.only(left: 16.0),
+                              child: Icon(
+                                Icons.push_pin,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          secondaryBackground: Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                color: Color.fromRGBO(255, 131, 131, 1),
+                                borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(6),
+                                  bottomRight: Radius.circular(6),
+                                ),
+                              ),
+                              alignment: Alignment.centerRight,
+                              child: const Padding(
+                                padding: EdgeInsets.only(right: 16.0),
+                                child: Icon(
+                                  Icons.delete,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ),
+                          child: _notificationItem(
+                            context,
+                            notification,
+                          ),
+                        ),
+                      );
+              },
+            );
+          }
+        },
+      ),
+    );
+  }
+}
+
+Widget _notificationItem(
+  BuildContext context,
+  NotificationModel notification,
+) {
+  var theme = Theme.of(context);
+  var dateTimePushed =
+      DateFormat("dd-MM-yyyy HH:mm").format(notification.dateTimePushed!);
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 8),
+    child: Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(6),
+      ),
+      width: double.infinity,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                if (!notification.isPinned) ...[
+                  if (!notification.isRead) ...[
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    const Icon(
+                      Icons.circle_rounded,
+                      color: Colors.black,
+                      size: 10,
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                  ],
+                ] else ...[
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  Transform.rotate(
+                    angle: 0.5,
+                    child: Icon(
+                      notification.isRead
+                          ? Icons.push_pin_outlined
+                          : Icons.push_pin,
+                      color: Colors.black,
+                      size: 30,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                ],
+                Text(
+                  notification.title,
+                  style: notification.isRead
+                      ? theme.textTheme.bodyMedium
+                      : theme.textTheme.bodyLarge,
+                ),
+              ],
+            ),
+            Text(
+              dateTimePushed,
+              style: theme.textTheme.bodyMedium,
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
 }
 
 Future<void> _navigateToNotificationDetail(
@@ -274,7 +317,6 @@ Future<void> _navigateToNotificationDetail(
   NotificationTranslations notificationTranslations,
   NotificationStyle style,
 ) async {
-  await markNotificationAsRead(notificationService, notification);
   if (context.mounted) {
     await Navigator.push(
       context,
@@ -287,6 +329,7 @@ Future<void> _navigateToNotificationDetail(
       ),
     );
   }
+  await markNotificationAsRead(notificationService, notification);
 }
 
 Future<void> dismissNotification(

@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "../flutter_notification_center.dart";
+import "package:flutter_notification_center/flutter_notification_center.dart";
 
 /// A bell icon widget that displays the number of active notifications.
 ///

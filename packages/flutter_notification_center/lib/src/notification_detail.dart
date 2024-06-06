@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "../flutter_notification_center.dart";
+import "package:flutter_notification_center/flutter_notification_center.dart";
 import "package:intl/intl.dart";
 
 /// A page displaying the details of a notification.
@@ -27,43 +27,58 @@ class NotificationDetailPage extends StatelessWidget {
   final NotificationTranslations translations;
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Text(
-            translations.appBarTitle,
-            style: notificationStyle.appTitleTextStyle,
-          ),
-          centerTitle: true,
+  Widget build(BuildContext context) {
+    var theme = Theme.of(context);
+    return Scaffold(
+      backgroundColor: theme.colorScheme.surface,
+      appBar: AppBar(
+        backgroundColor: theme.appBarTheme.backgroundColor,
+        title: Text(
+          translations.appBarTitle,
+          style: theme.appBarTheme.titleTextStyle,
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  notification.title,
-                  style: notificationStyle.titleTextStyle ?? const TextStyle(),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  notification.body,
-                  style:
-                      notificationStyle.subtitleTextStyle ?? const TextStyle(),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  '${translations.datePrefix} ${DateFormat('yyyy-MM-dd HH:mm').format(
-                    notification.dateTimePushed ?? DateTime.now(),
-                  )}',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                  ),
-                ),
-              ],
-            ),
+        iconTheme: theme.appBarTheme.iconTheme ??
+            const IconThemeData(color: Colors.white),
+        centerTitle: true,
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: const Icon(
+            Icons.arrow_back_ios,
           ),
         ),
-      );
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                notification.title,
+                style: notificationStyle.titleTextStyle ?? const TextStyle(),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                notification.body,
+                style: notificationStyle.subtitleTextStyle ?? const TextStyle(),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                "${translations.datePrefix}"
+                ' ${DateFormat('yyyy-MM-dd HH:mm').format(
+                  notification.dateTimePushed ?? DateTime.now(),
+                )}',
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

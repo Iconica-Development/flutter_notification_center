@@ -1,3 +1,8 @@
+## [2.0.0] - 6 June 2024
+
+* Rework design for notification center
+* Added iconica linter
+
 ## [1.4.1] - 4 June 2024
 
 * Fix notification amount number to properly size and show plus icon when above certain amount

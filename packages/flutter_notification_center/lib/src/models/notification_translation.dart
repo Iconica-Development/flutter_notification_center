@@ -14,7 +14,7 @@ class NotificationTranslations {
   });
 
   const NotificationTranslations.empty({
-    this.appBarTitle = "Notification Center",
+    this.appBarTitle = "Notifications",
     this.noNotifications = "No unread notifications available.",
     this.notificationDismissed = "Notification dismissed.",
     this.notificationPinned = "Notification pinned.",
@@ -63,18 +63,17 @@ class NotificationTranslations {
     String? datePrefix,
     String? notAvailable,
     String? dissmissDialog,
-  }) {
-    return NotificationTranslations(
-      appBarTitle: appBarTitle ?? this.appBarTitle,
-      noNotifications: noNotifications ?? this.noNotifications,
-      notificationDismissed:
-          notificationDismissed ?? this.notificationDismissed,
-      notificationPinned: notificationPinned ?? this.notificationPinned,
-      notificationUnpinned: notificationUnpinned ?? this.notificationUnpinned,
-      errorMessage: errorMessage ?? this.errorMessage,
-      datePrefix: datePrefix ?? this.datePrefix,
-      notAvailable: notAvailable ?? this.notAvailable,
-      dissmissDialog: dissmissDialog ?? this.dissmissDialog,
-    );
-  }
+  }) =>
+      NotificationTranslations(
+        appBarTitle: appBarTitle ?? this.appBarTitle,
+        noNotifications: noNotifications ?? this.noNotifications,
+        notificationDismissed:
+            notificationDismissed ?? this.notificationDismissed,
+        notificationPinned: notificationPinned ?? this.notificationPinned,
+        notificationUnpinned: notificationUnpinned ?? this.notificationUnpinned,
+        errorMessage: errorMessage ?? this.errorMessage,
+        datePrefix: datePrefix ?? this.datePrefix,
+        notAvailable: notAvailable ?? this.notAvailable,
+        dissmissDialog: dissmissDialog ?? this.dissmissDialog,
+      );
 }

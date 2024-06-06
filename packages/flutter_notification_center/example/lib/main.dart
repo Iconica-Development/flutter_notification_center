@@ -82,7 +82,6 @@ class _NotificationCenterDemoState extends State<NotificationCenterDemo> {
         notificationTranslations: const NotificationTranslations.empty(),
         context: context,
       ),
-      seperateNotificationsWithDivider: true,
     );
     popupHandler = PopupHandler(context: context, config: config);
   }

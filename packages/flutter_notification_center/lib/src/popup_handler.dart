@@ -1,18 +1,17 @@
 // Define a PopupHandler class to handle notification popups
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
 
-import 'package:flutter_notification_center/flutter_notification_center.dart';
+import "package:flutter_notification_center/flutter_notification_center.dart";
 
 class PopupHandler {
-  final BuildContext context;
-  final NotificationConfig config;
-
   PopupHandler({
     required this.context,
     required this.config,
   });
+  final BuildContext context;
+  final NotificationConfig config;
 
-  void handleNotificationPopup(NotificationModel notification) {
+  Future<void> handleNotificationPopup(NotificationModel notification) async {
     if (!config.enableNotificationPopups) return;
 
     if (config.showAsSnackBar) {
@@ -31,7 +30,7 @@ class PopupHandler {
     } else {
       if (ModalRoute.of(context)?.isCurrent != true) return;
 
-      showDialog(
+      await showDialog(
         context: context,
         builder: (context) => NotificationDialog(
           translations: config.translations,
