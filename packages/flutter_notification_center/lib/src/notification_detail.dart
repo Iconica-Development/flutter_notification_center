@@ -11,14 +11,10 @@ class NotificationDetailPage extends StatelessWidget {
   /// The [notification] parameter specifies the notification
   ///  to display details for.
   const NotificationDetailPage({
-    required this.notificationStyle,
     required this.notification,
     required this.translations,
     super.key,
   });
-
-  /// The notification style.
-  final NotificationStyle notificationStyle;
 
   /// The notification to display details for.
   final NotificationModel notification;
@@ -30,12 +26,11 @@ class NotificationDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
         backgroundColor: theme.appBarTheme.backgroundColor,
         title: Text(
           translations.appBarTitle,
-          style: theme.appBarTheme.titleTextStyle,
+          style: theme.textTheme.headlineLarge,
         ),
         iconTheme: theme.appBarTheme.iconTheme ??
             const IconThemeData(color: Colors.white),
@@ -57,12 +52,12 @@ class NotificationDetailPage extends StatelessWidget {
             children: [
               Text(
                 notification.title,
-                style: notificationStyle.titleTextStyle ?? const TextStyle(),
+                style: theme.textTheme.titleMedium,
               ),
               const SizedBox(height: 10),
               Text(
                 notification.body,
-                style: notificationStyle.subtitleTextStyle ?? const TextStyle(),
+                style: theme.textTheme.bodyMedium,
               ),
               const SizedBox(height: 10),
               Text(
@@ -70,10 +65,7 @@ class NotificationDetailPage extends StatelessWidget {
                 ' ${DateFormat('yyyy-MM-dd HH:mm').format(
                   notification.dateTimePushed ?? DateTime.now(),
                 )}',
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey,
-                ),
+                style: theme.textTheme.labelSmall,
               ),
             ],
           ),

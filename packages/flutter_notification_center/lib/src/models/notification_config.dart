@@ -17,6 +17,8 @@ class NotificationConfig {
     this.showAsSnackBar = true,
     this.enableNotificationPopups = true,
     this.bellStyle = const AnimatedNotificationBellStyle(),
+    this.pinnedIconColor = Colors.black,
+    this.emptyNotificationsBuilder,
   });
 
   /// The notification service to use for delivering notifications.
@@ -38,4 +40,10 @@ class NotificationConfig {
 
   /// The style of the notification bell.
   final AnimatedNotificationBellStyle bellStyle;
+
+  /// The color of the trailing icon (if any) in the notification.
+  final Color? pinnedIconColor;
+
+  /// A builder function to display when there are no notifications.
+  final Widget Function()? emptyNotificationsBuilder;
 }

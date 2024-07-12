@@ -48,12 +48,11 @@ class NotificationCenterState extends State<NotificationCenter> {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
         backgroundColor: theme.appBarTheme.backgroundColor,
         title: Text(
           widget.config.translations.appBarTitle,
-          style: theme.appBarTheme.titleTextStyle,
+          style: theme.textTheme.headlineLarge,
         ),
         centerTitle: true,
         iconTheme: theme.appBarTheme.iconTheme ??
@@ -76,9 +75,13 @@ class NotificationCenterState extends State<NotificationCenter> {
             debugPrint("Error: ${snapshot.error}");
             return Center(child: Text(widget.config.translations.errorMessage));
           } else if (snapshot.data == null || snapshot.data!.isEmpty) {
-            return Center(
-              child: Text(widget.config.translations.noNotifications),
-            );
+            return widget.config.emptyNotificationsBuilder?.call() ??
+                Center(
+                  child: Text(
+                    widget.config.translations.noNotifications,
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                );
           } else {
             return ListView.builder(
               padding: const EdgeInsets.symmetric(
@@ -95,7 +98,6 @@ class NotificationCenterState extends State<NotificationCenter> {
                           notification,
                           widget.config.service,
                           widget.config.translations,
-                          const NotificationStyle(),
                         ),
                         child: Dismissible(
                           key: Key("${notification.id}_pinned"),
@@ -154,6 +156,7 @@ class NotificationCenterState extends State<NotificationCenter> {
                           child: _notificationItem(
                             context,
                             notification,
+                            widget.config,
                           ),
                         ),
                       )
@@ -163,7 +166,6 @@ class NotificationCenterState extends State<NotificationCenter> {
                           notification,
                           widget.config.service,
                           widget.config.translations,
-                          const NotificationStyle(),
                         ),
                         child: Dismissible(
                           key: Key(notification.id),
@@ -225,6 +227,7 @@ class NotificationCenterState extends State<NotificationCenter> {
                           child: _notificationItem(
                             context,
                             notification,
+                            widget.config,
                           ),
                         ),
                       );
@@ -240,6 +243,7 @@ class NotificationCenterState extends State<NotificationCenter> {
 Widget _notificationItem(
   BuildContext context,
   NotificationModel notification,
+  NotificationConfig config,
 ) {
   var theme = Theme.of(context);
   var dateTimePushed =
@@ -267,7 +271,7 @@ Widget _notificationItem(
                     const Icon(
                       Icons.circle_rounded,
                       color: Colors.black,
-                      size: 10,
+                      size: 8,
                     ),
                     const SizedBox(
                       width: 8,
@@ -283,7 +287,7 @@ Widget _notificationItem(
                       notification.isRead
                           ? Icons.push_pin_outlined
                           : Icons.push_pin,
-                      color: Colors.black,
+                      color: config.pinnedIconColor,
                       size: 30,
                     ),
                   ),
@@ -293,15 +297,15 @@ Widget _notificationItem(
                 ],
                 Text(
                   notification.title,
-                  style: notification.isRead
+                  style: notification.isRead && !notification.isPinned
                       ? theme.textTheme.bodyMedium
-                      : theme.textTheme.bodyLarge,
+                      : theme.textTheme.titleMedium,
                 ),
               ],
             ),
             Text(
               dateTimePushed,
-              style: theme.textTheme.bodyMedium,
+              style: theme.textTheme.labelSmall,
             ),
           ],
         ),
@@ -315,7 +319,6 @@ Future<void> _navigateToNotificationDetail(
   NotificationModel notification,
   NotificationService notificationService,
   NotificationTranslations notificationTranslations,
-  NotificationStyle style,
 ) async {
   if (context.mounted) {
     await Navigator.push(
@@ -324,7 +327,6 @@ Future<void> _navigateToNotificationDetail(
         builder: (context) => NotificationDetailPage(
           translations: notificationTranslations,
           notification: notification,
-          notificationStyle: style,
         ),
       ),
     );
