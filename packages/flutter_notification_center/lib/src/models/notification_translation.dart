@@ -14,7 +14,7 @@ class NotificationTranslations {
   });
 
   const NotificationTranslations.empty({
-    this.appBarTitle = "Notifications",
+    this.appBarTitle = "notifications",
     this.noNotifications = "No unread notifications available.",
     this.notificationDismissed = "Notification dismissed.",
     this.notificationPinned = "Notification pinned.",

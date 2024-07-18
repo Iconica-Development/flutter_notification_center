@@ -63,21 +63,6 @@ class _NotificationCenterDemoState extends State<NotificationCenterDemo> {
       notificationWidgetBuilder: (notification, context) =>
           CustomNotificationWidget(
         notification: notification,
-        style: const NotificationStyle(
-          appTitleTextStyle: TextStyle(
-            color: Colors.black,
-            fontSize: 20,
-          ),
-          titleTextStyle: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.w400,
-            fontSize: 16,
-          ),
-          leadingIconColor: Colors.grey,
-          pinnedIconColor: Colors.grey,
-          isReadDotColor: Colors.red,
-          showNotificationIcon: true,
-        ),
         notificationService: service,
         notificationTranslations: const NotificationTranslations.empty(),
         context: context,

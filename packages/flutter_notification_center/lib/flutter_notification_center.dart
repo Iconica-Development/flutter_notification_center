@@ -6,7 +6,6 @@ export "package:flutter_animated_widgets/flutter_animated_widgets.dart";
 
 export "src/models/notification.dart";
 export "src/models/notification_config.dart";
-export "src/models/notification_theme.dart";
 export "src/models/notification_translation.dart";
 export "src/notification_bell.dart";
 export "src/notification_bell_story.dart";

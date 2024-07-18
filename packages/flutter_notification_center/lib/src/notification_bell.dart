@@ -46,6 +46,7 @@ class _NotificationBellState extends State<NotificationBell> {
 
   @override
   Widget build(BuildContext context) => IconButton(
+        padding: EdgeInsets.zero,
         onPressed: widget.onTap,
         icon: AnimatedNotificationBell(
           duration: const Duration(seconds: 1),

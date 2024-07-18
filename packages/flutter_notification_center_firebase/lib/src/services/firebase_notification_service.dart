@@ -238,7 +238,7 @@ class FirebaseNotificationService
               .doc(notificationModel.id);
       await documentReference.delete();
       listOfActiveNotifications
-          .removeAt(listOfActiveNotifications.indexOf(notificationModel));
+          .removeWhere((element) => element.id == notificationModel.id);
       notifyListeners();
     } on Exception catch (e) {
       debugPrint("Error deleting document: $e");
@@ -403,6 +403,7 @@ class FirebaseNotificationService
         .collection(activeNotificationsCollection)
         .doc(userId)
         .collection(activeNotificationsCollection)
+        .where("isRead", isEqualTo: false)
         .snapshots()
         .map((e) => e.docs.length);
     yield* amount;
