@@ -134,7 +134,9 @@ class NotificationCenterState extends State<NotificationCenter> {
                               child: SvgPicture.asset(
                                 "assets/unpin_icon.svg",
                                 package: "flutter_notification_center",
-                                color: Colors.white,
+                                theme: const SvgTheme(
+                                  currentColor: Colors.white,
+                                ),
                                 height: 24,
                               ),
                             ),
@@ -153,7 +155,9 @@ class NotificationCenterState extends State<NotificationCenter> {
                               child: SvgPicture.asset(
                                 "assets/unpin_icon.svg",
                                 package: "flutter_notification_center",
-                                color: Colors.white,
+                                theme: const SvgTheme(
+                                  currentColor: Colors.white,
+                                ),
                                 height: 24,
                               ),
                             ),
