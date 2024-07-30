@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_notification_center/flutter_notification_center.dart";
+import "package:flutter_svg/svg.dart";
 import "package:intl/intl.dart";
 
 /// Widget for displaying the notification center.
@@ -121,35 +122,43 @@ class NotificationCenterState extends State<NotificationCenter> {
                           },
                           background: Container(
                             decoration: const BoxDecoration(
-                              color: Color.fromRGBO(59, 213, 111, 1),
+                              color: Color(0xFF88CB33),
                               borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(6),
                                 bottomLeft: Radius.circular(6),
                               ),
                             ),
                             alignment: Alignment.centerLeft,
-                            child: const Padding(
-                              padding: EdgeInsets.only(left: 16.0),
-                              child: Icon(
-                                Icons.push_pin,
-                                color: Colors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 16.0),
+                              child: SvgPicture.asset(
+                                "assets/unpin_icon.svg",
+                                package: "flutter_notification_center",
+                                theme: const SvgTheme(
+                                  currentColor: Colors.white,
+                                ),
+                                height: 24,
                               ),
                             ),
                           ),
                           secondaryBackground: Container(
                             decoration: const BoxDecoration(
-                              color: Color.fromRGBO(59, 213, 111, 1),
+                              color: Color(0xFF88CB33),
                               borderRadius: BorderRadius.only(
                                 topRight: Radius.circular(6),
                                 bottomRight: Radius.circular(6),
                               ),
                             ),
                             alignment: Alignment.centerRight,
-                            child: const Padding(
-                              padding: EdgeInsets.only(right: 16.0),
-                              child: Icon(
-                                Icons.push_pin,
-                                color: Colors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 16.0),
+                              child: SvgPicture.asset(
+                                "assets/unpin_icon.svg",
+                                package: "flutter_notification_center",
+                                theme: const SvgTheme(
+                                  currentColor: Colors.white,
+                                ),
+                                height: 24,
                               ),
                             ),
                           ),
@@ -189,18 +198,21 @@ class NotificationCenterState extends State<NotificationCenter> {
                           },
                           background: Container(
                             decoration: const BoxDecoration(
-                              color: Color.fromRGBO(59, 213, 111, 1),
+                              color: Color(0xFF88CB33),
                               borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(6),
                                 bottomLeft: Radius.circular(6),
                               ),
                             ),
                             alignment: Alignment.centerLeft,
-                            child: const Padding(
-                              padding: EdgeInsets.only(left: 16.0),
-                              child: Icon(
-                                Icons.push_pin,
-                                color: Colors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 16.0),
+                              child: Transform.rotate(
+                                angle: 0.5,
+                                child: const Icon(
+                                  Icons.push_pin_outlined,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
@@ -208,7 +220,7 @@ class NotificationCenterState extends State<NotificationCenter> {
                             padding: const EdgeInsets.only(bottom: 8),
                             child: Container(
                               decoration: const BoxDecoration(
-                                color: Color.fromRGBO(255, 131, 131, 1),
+                                color: Color(0xFFFF6161),
                                 borderRadius: BorderRadius.only(
                                   topRight: Radius.circular(6),
                                   bottomRight: Radius.circular(6),
@@ -219,7 +231,7 @@ class NotificationCenterState extends State<NotificationCenter> {
                                 padding: EdgeInsets.only(right: 16.0),
                                 child: Icon(
                                   Icons.delete,
-                                  color: Colors.black,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),
@@ -247,7 +259,7 @@ Widget _notificationItem(
 ) {
   var theme = Theme.of(context);
   var dateTimePushed =
-      DateFormat("dd-MM-yyyy HH:mm").format(notification.dateTimePushed!);
+      DateFormat("dd/MM/yyyy 'at' HH:mm").format(notification.dateTimePushed!);
   return Padding(
     padding: const EdgeInsets.only(bottom: 8),
     child: Container(
@@ -284,9 +296,7 @@ Widget _notificationItem(
                   Transform.rotate(
                     angle: 0.5,
                     child: Icon(
-                      notification.isRead
-                          ? Icons.push_pin_outlined
-                          : Icons.push_pin,
+                      Icons.push_pin_outlined,
                       color: config.pinnedIconColor,
                       size: 30,
                     ),

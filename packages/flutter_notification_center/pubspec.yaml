@@ -1,7 +1,7 @@
 name: flutter_notification_center
 description: "A Flutter package for displaying notifications in a notification center."
 publish_to: "none"
-version: 3.0.0
+version: 3.0.1
 
 environment:
   sdk: ">=3.3.2 <4.0.0"
@@ -15,6 +15,7 @@ dependencies:
     git:
       url: https://github.com/Iconica-Development/flutter_animated_widgets
       ref: 0.3.1
+  flutter_svg: ^2.0.10+1
 
 dev_dependencies:
   flutter_test:
@@ -27,3 +28,5 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   uses-material-design: true
+  assets:
+    - assets/

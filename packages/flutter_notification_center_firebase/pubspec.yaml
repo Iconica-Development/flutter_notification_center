@@ -21,7 +21,7 @@ dependencies:
   flutter_notification_center:
     git:
       url: https://github.com/Iconica-Development/flutter_notification_center
-      ref: 3.0.0
+      ref: 3.0.1
       path: packages/flutter_notification_center
 
 dev_dependencies:

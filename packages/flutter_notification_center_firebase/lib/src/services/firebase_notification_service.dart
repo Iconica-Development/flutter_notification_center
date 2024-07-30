@@ -36,7 +36,6 @@ class FirebaseNotificationService
 
   Future<void> _startTimer() async {
     _timer = Timer.periodic(const Duration(seconds: 15), (timer) async {
-      debugPrint("Checking for scheduled notifications");
       await checkForScheduledNotifications();
     });
   }
@@ -354,7 +353,6 @@ class FirebaseNotificationService
       var querySnapshot = await plannedNotificationsResult.get();
 
       if (querySnapshot.docs.isEmpty) {
-        debugPrint("No scheduled notifications to be pushed");
         return;
       }
 
