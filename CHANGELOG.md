@@ -1,3 +1,9 @@
+## [4.0.0] - 14 August 2024
+
+* Fix overflow issue with long text in notification
+* Fix new notification only sending to the person that triggered the notification
+* Added `onNotificationTap` to a notification
+
 ## [2.0.0] - 6 June 2024
 
 * Rework design for notification center
