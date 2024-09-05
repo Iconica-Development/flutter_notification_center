@@ -19,6 +19,7 @@ class NotificationConfig {
     this.bellStyle = const AnimatedNotificationBellStyle(),
     this.pinnedIconColor = Colors.black,
     this.emptyNotificationsBuilder,
+    this.onNotificationTap,
   });
 
   /// The notification service to use for delivering notifications.
@@ -46,4 +47,6 @@ class NotificationConfig {
 
   /// A builder function to display when there are no notifications.
   final Widget Function()? emptyNotificationsBuilder;
+
+  final Function(NotificationModel)? onNotificationTap;
 }

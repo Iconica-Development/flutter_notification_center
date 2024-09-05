@@ -42,7 +42,8 @@ class FirebaseNotificationService
 
   @override
   Future<void> pushNotification(
-    NotificationModel notification, [
+    NotificationModel notification,
+    List<String> recipientIds, [
     Function(NotificationModel model)? onNewNotification,
   ]) async {
     try {
@@ -53,24 +54,30 @@ class FirebaseNotificationService
         return;
       }
 
-      CollectionReference notifications =
-          FirebaseFirestore.instanceFor(app: _firebaseApp)
-              .collection(activeNotificationsCollection)
-              .doc(userId)
-              .collection(activeNotificationsCollection);
+      for (var recipientId in recipientIds) {
+        CollectionReference notifications =
+            FirebaseFirestore.instanceFor(app: _firebaseApp)
+                .collection(activeNotificationsCollection)
+                .doc(recipientId)
+                .collection(activeNotificationsCollection);
 
-      var currentDateTime = DateTime.now();
-      notification.dateTimePushed = currentDateTime;
-      var notificationMap = notification.toMap();
-      await notifications.doc(notification.id).set(notificationMap);
+        var currentDateTime = DateTime.now();
+        notification.dateTimePushed = currentDateTime;
+        var notificationMap = notification.toMap();
+        await notifications.doc(notification.id).set(notificationMap);
+      }
+      if (recipientIds.contains(userId)) {
+        listOfActiveNotifications = [
+          ...listOfActiveNotifications,
+          notification,
+        ];
 
-      listOfActiveNotifications = [...listOfActiveNotifications, notification];
-
-      //Show popup with notification conte
-      if (onNewNotification != null) {
-        onNewNotification(notification);
-      } else {
-        newNotificationCallback(notification);
+        //Show popup with notification conte
+        if (onNewNotification != null) {
+          onNewNotification(notification);
+        } else {
+          newNotificationCallback(notification);
+        }
       }
 
       notifyListeners();
@@ -364,7 +371,11 @@ class FirebaseNotificationService
       for (var notification in plannedNotifications) {
         if (notification.scheduledFor!.isBefore(currentTime) ||
             notification.scheduledFor!.isAtSameMomentAs(currentTime)) {
-          await pushNotification(notification, newNotificationCallback);
+          await pushNotification(
+            notification,
+            [userId],
+            newNotificationCallback,
+          );
 
           await deletePlannedNotification(notification);
 

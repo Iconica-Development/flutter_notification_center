@@ -27,7 +27,8 @@ abstract class NotificationService with ChangeNotifier {
 
   /// Pushes a notification to the service.
   Future pushNotification(
-    NotificationModel notification, [
+    NotificationModel notification,
+    List<String> recipientIds, [
     Function(NotificationModel model)? onNewNotification,
   ]);
 

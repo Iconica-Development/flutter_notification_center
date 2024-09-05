@@ -94,12 +94,18 @@ class NotificationCenterState extends State<NotificationCenter> {
                 var notification = snapshot.data![index];
                 return notification.isPinned
                     ? GestureDetector(
-                        onTap: () async => _navigateToNotificationDetail(
-                          context,
-                          notification,
-                          widget.config.service,
-                          widget.config.translations,
-                        ),
+                        onTap: () async {
+                          if (widget.config.onNotificationTap != null) {
+                            widget.config.onNotificationTap!.call(notification);
+                          } else {
+                            await _navigateToNotificationDetail(
+                              context,
+                              notification,
+                              widget.config.service,
+                              widget.config.translations,
+                            );
+                          }
+                        },
                         child: Dismissible(
                           key: Key("${notification.id}_pinned"),
                           onDismissed: (direction) async {
@@ -170,12 +176,18 @@ class NotificationCenterState extends State<NotificationCenter> {
                         ),
                       )
                     : GestureDetector(
-                        onTap: () async => _navigateToNotificationDetail(
-                          context,
-                          notification,
-                          widget.config.service,
-                          widget.config.translations,
-                        ),
+                        onTap: () async {
+                          if (widget.config.onNotificationTap != null) {
+                            widget.config.onNotificationTap!.call(notification);
+                          } else {
+                            await _navigateToNotificationDetail(
+                              context,
+                              notification,
+                              widget.config.service,
+                              widget.config.translations,
+                            );
+                          }
+                        },
                         child: Dismissible(
                           key: Key(notification.id),
                           onDismissed: (direction) async {
@@ -274,16 +286,20 @@ Widget _notificationItem(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (!notification.isPinned) ...[
                   if (!notification.isRead) ...[
                     const SizedBox(
                       width: 8,
                     ),
-                    const Icon(
-                      Icons.circle_rounded,
-                      color: Colors.black,
-                      size: 8,
+                    const Padding(
+                      padding: EdgeInsets.only(top: 8),
+                      child: Icon(
+                        Icons.circle_rounded,
+                        color: Colors.black,
+                        size: 8,
+                      ),
                     ),
                     const SizedBox(
                       width: 8,
@@ -305,11 +321,13 @@ Widget _notificationItem(
                     width: 8,
                   ),
                 ],
-                Text(
-                  notification.title,
-                  style: notification.isRead && !notification.isPinned
-                      ? theme.textTheme.bodyMedium
-                      : theme.textTheme.titleMedium,
+                Flexible(
+                  child: Text(
+                    notification.title,
+                    style: notification.isRead && !notification.isPinned
+                        ? theme.textTheme.bodyMedium
+                        : theme.textTheme.titleMedium,
+                  ),
                 ),
               ],
             ),
