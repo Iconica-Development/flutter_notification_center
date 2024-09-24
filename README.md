@@ -15,12 +15,13 @@ A Flutter package for creating notification center displaying a list of notifica
 
 To use this package, add `flutter_notification_center` as a dependency in your pubspec.yaml file.
 
+- Provide a `NotificationService` to the userstory to define and alter behaviour, this service accepts and `NotificationRepositoryInterface` as repository (data source)
+
 - For custom notification styling provide the optional notificationWidgetBuilder with your own implementation.
 
 The `NotificationConfig` has its own parameters, as specified below:
 | Parameter | Explanation |
 |-----------|-------------|
-| service | The notification service that will be used |
 | seperateNotificationsWithDivider | If true notifications will be seperated with dividers within the notification center |
 | translations | The translations that will be used |
 | notificationWidgetBuilder | The widget that defines the styles and logic for every notification |

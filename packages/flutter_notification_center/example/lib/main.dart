@@ -1,10 +1,10 @@
-import 'package:example/custom_notification.dart';
+// import 'package:example/firebase_options.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_notification_center_repository/firebase_notification_center_repository.dart';
 // import 'package:example/firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_notification_center_firebase/flutter_notification_center_firebase.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_notification_center/flutter_notification_center.dart';
 
@@ -22,6 +22,7 @@ void main() async {
 }
 
 Future<void> _configureApp() async {
+  // Generate a FirebaseOptions and uncomment the following lines to initialize Firebase.
   // await Firebase.initializeApp(
   // options: DefaultFirebaseOptions.currentPlatform,
   // );
@@ -34,7 +35,8 @@ Future<void> _configureApp() async {
 }
 
 Future<void> _signInUser() async {
-  /// Implement your own sign in logic here
+  // Sign in, you could use the line below or implement your own sign in method.
+  // await FirebaseAuth.instance.signInAnonymously();
 }
 
 class NotificationCenterDemo extends StatefulWidget {
@@ -45,30 +47,39 @@ class NotificationCenterDemo extends StatefulWidget {
 }
 
 class _NotificationCenterDemoState extends State<NotificationCenterDemo> {
-  late NotificationConfig config;
-  late PopupHandler popupHandler;
+  late NotificationService service;
+  // Provide a user ID here. For Firebase you can use the commented line below.
+  String userId = ""; //FirebaseAuth.instance.currentUser!.uid;
 
   @override
   void initState() {
     super.initState();
-    var service = FirebaseNotificationService(
-      newNotificationCallback: (notification) {
-        popupHandler.handleNotificationPopup(notification);
-      },
+
+    service = NotificationService(
+      userId: userId,
+      repository: FirebaseNotificationRepository(),
     );
-    config = NotificationConfig(
-      service: service,
-      enableNotificationPopups: true,
-      showAsSnackBar: true,
-      notificationWidgetBuilder: (notification, context) =>
-          CustomNotificationWidget(
-        notification: notification,
-        notificationService: service,
-        notificationTranslations: const NotificationTranslations.empty(),
-        context: context,
+
+    // Uncomment the line below to send a test notification.
+    // Provide a user ID in the list to send the notification to.
+    _sendTestNotification([userId]);
+  }
+
+  _sendTestNotification(List<String> recipientIds) async {
+    await service.pushNotification(
+      NotificationModel(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        title: 'Test Notification',
+        body: 'This is a test notification.',
+        // For a scheduled message provide a scheduledFor date.
+        // For a recurring message provide a scheduledFor date, set recurring to true and provide an occuringInterval.
+        //
+        // scheduledFor: DateTime.now().add(const Duration(seconds: 5)),
+        // recurring: true,
+        // occuringInterval: OcurringInterval.debug,
       ),
+      recipientIds,
     );
-    popupHandler = PopupHandler(context: context, config: config);
   }
 
   @override
@@ -79,7 +90,8 @@ class _NotificationCenterDemoState extends State<NotificationCenterDemo> {
         centerTitle: true,
         actions: [
           NotificationBellWidgetStory(
-            config: config,
+            userId: userId,
+            service: service,
           ),
         ],
       ),

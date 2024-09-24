@@ -49,8 +49,10 @@ android/
 web/
 linux/
 macos/
+windows/
 
 pubspec.lock
 .metadata
 flutter_notification_center.iml
 dotenv
+firebase_options.dart

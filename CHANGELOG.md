@@ -1,3 +1,7 @@
+## [5.0.0] - 24 September 2024
+
+* Refactor package with the new component structure
+
 ## [4.0.0] - 14 August 2024
 
 * Fix overflow issue with long text in notification

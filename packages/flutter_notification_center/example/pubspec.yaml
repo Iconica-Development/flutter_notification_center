@@ -2,38 +2,47 @@ name: example
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: "none" # Remove this line if you wish to publish to pub.dev
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.0
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+# In Windows, build-name is used as the major, minor, and patch parts
+# of the product and file versions while build-number is used as the build suffix.
+version: 1.0.0+1
 
 environment:
-  sdk: ">=3.3.2 <4.0.0"
+  sdk: ^3.5.3
 
 dependencies:
   flutter:
     sdk: flutter
-  intl: ^0.17.0
+
+  cupertino_icons: ^1.0.8
 
   flutter_notification_center:
-    git:
-      url: https://github.com/Iconica-Development/flutter_notification_center
-      path: packages/flutter_notification_center
-      ref: 3.0.0
+    path: ../
 
-  flutter_notification_center_firebase:
-    git:
-      url: https://github.com/Iconica-Development/flutter_notification_center
-      path: packages/flutter_notification_center_firebase
-      ref: 3.0.0
+  firebase_notification_center_repository:
+    path: ../../firebase_notification_center_repository
+  
+  intl: ^0.19.0
+
+  firebase_auth: any
+  firebase_core: any
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_iconica_analysis:
-    git:
-      url: https://github.com/Iconica-Development/flutter_iconica_analysis
-      ref: 7.0.0
 
-# The following section is specific to Flutter packages.
+  flutter_lints: ^4.0.0
+
 flutter:
   uses-material-design: true

@@ -1,7 +1,8 @@
 import "package:flutter/material.dart";
-import "package:flutter_notification_center/flutter_notification_center.dart";
+import "package:flutter_notification_center/src/screens/notification_detail.dart";
 import "package:flutter_svg/svg.dart";
 import "package:intl/intl.dart";
+import "package:notification_center_repository_interface/notification_center_repository_interface.dart";
 
 /// Widget for displaying the notification center.
 class NotificationCenter extends StatefulWidget {
@@ -10,11 +11,14 @@ class NotificationCenter extends StatefulWidget {
   /// [config]: Configuration for the notification center.
   const NotificationCenter({
     required this.config,
+    required this.service,
     super.key,
   });
 
   /// Configuration for the notification center.
   final NotificationConfig config;
+
+  final NotificationService service;
 
   @override
   NotificationCenterState createState() => NotificationCenterState();
@@ -22,27 +26,16 @@ class NotificationCenter extends StatefulWidget {
 
 /// State for the notification center.
 class NotificationCenterState extends State<NotificationCenter> {
-  late Future<List<NotificationModel>> _notificationsFuture;
+  late Stream<List<NotificationModel>> _notificationsStream;
 
   @override
   void initState() {
     super.initState();
-    // ignore: discarded_futures
-    _notificationsFuture = widget.config.service.getActiveNotifications();
-    widget.config.service.getActiveAmountStream().listen((amount) async {
-      _notificationsFuture = widget.config.service.getActiveNotifications();
+    _notificationsStream = widget.service.getActiveNotifications();
+
+    widget.service.getActiveAmountStream().listen((data) {
+      setState(() {});
     });
-    widget.config.service.addListener(_listener);
-  }
-
-  @override
-  void dispose() {
-    widget.config.service.removeListener(_listener);
-    super.dispose();
-  }
-
-  void _listener() {
-    setState(() {});
   }
 
   @override
@@ -67,8 +60,8 @@ class NotificationCenterState extends State<NotificationCenter> {
           ),
         ),
       ),
-      body: FutureBuilder<List<NotificationModel>>(
-        future: _notificationsFuture,
+      body: StreamBuilder<List<NotificationModel>>(
+        stream: _notificationsStream,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -101,7 +94,7 @@ class NotificationCenterState extends State<NotificationCenter> {
                             await _navigateToNotificationDetail(
                               context,
                               notification,
-                              widget.config.service,
+                              widget.service,
                               widget.config.translations,
                             );
                           }
@@ -111,7 +104,7 @@ class NotificationCenterState extends State<NotificationCenter> {
                           onDismissed: (direction) async {
                             if (direction == DismissDirection.endToStart) {
                               await unPinNotification(
-                                widget.config.service,
+                                widget.service,
                                 notification,
                                 widget.config.translations,
                                 context,
@@ -119,7 +112,7 @@ class NotificationCenterState extends State<NotificationCenter> {
                             } else if (direction ==
                                 DismissDirection.startToEnd) {
                               await unPinNotification(
-                                widget.config.service,
+                                widget.service,
                                 notification,
                                 widget.config.translations,
                                 context,
@@ -183,7 +176,7 @@ class NotificationCenterState extends State<NotificationCenter> {
                             await _navigateToNotificationDetail(
                               context,
                               notification,
-                              widget.config.service,
+                              widget.service,
                               widget.config.translations,
                             );
                           }
@@ -193,7 +186,7 @@ class NotificationCenterState extends State<NotificationCenter> {
                           onDismissed: (direction) async {
                             if (direction == DismissDirection.endToStart) {
                               await dismissNotification(
-                                widget.config.service,
+                                widget.service,
                                 notification,
                                 widget.config.translations,
                                 context,
@@ -201,7 +194,7 @@ class NotificationCenterState extends State<NotificationCenter> {
                             } else if (direction ==
                                 DismissDirection.startToEnd) {
                               await pinNotification(
-                                widget.config.service,
+                                widget.service,
                                 notification,
                                 widget.config.translations,
                                 context,
@@ -270,8 +263,11 @@ Widget _notificationItem(
   NotificationConfig config,
 ) {
   var theme = Theme.of(context);
-  var dateTimePushed =
-      DateFormat("dd/MM/yyyy 'at' HH:mm").format(notification.dateTimePushed!);
+  String? dateTimePushed;
+  if (notification.dateTimePushed != null) {
+    dateTimePushed = DateFormat("dd/MM/yyyy 'at' HH:mm")
+        .format(notification.dateTimePushed!);
+  }
   return Padding(
     padding: const EdgeInsets.only(bottom: 8),
     child: Container(
@@ -332,7 +328,7 @@ Widget _notificationItem(
               ],
             ),
             Text(
-              dateTimePushed,
+              dateTimePushed ?? "",
               style: theme.textTheme.labelSmall,
             ),
           ],

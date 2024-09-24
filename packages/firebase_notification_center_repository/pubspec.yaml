@@ -1,4 +1,4 @@
-name: flutter_notification_center
+name: firebase_notification_center_repository
 description: "A new Flutter package project."
 version: 5.0.0
 homepage:
@@ -12,14 +12,10 @@ dependencies:
   flutter:
     sdk: flutter
 
-  intl: ^0.19.0
-  flutter_svg: ^2.0.10+1
+  # Firebase
+  cloud_firestore: ^5.4.2
+  firebase_core: ^3.5.0
 
-  flutter_animated_widgets:
-    git:
-      url: https://github.com/Iconica-Development/flutter_animated_widgets
-      ref: 0.3.1
-  
   notification_center_repository_interface:
     git:
       url: https://github.com/Iconica-Development/flutter_notification_center.git
@@ -33,5 +29,3 @@ dev_dependencies:
       ref: 7.0.0
 
 flutter:
-  assets:
-    - assets/
