@@ -30,7 +30,6 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
-.dart_tools/
 
 # Symbolication related
 app.*.symbols
@@ -42,11 +41,3 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-
-# iOS related
-/ios/
-
-lib/config/
-pubspec.lock
-dotenv
-firebase_options.dart
