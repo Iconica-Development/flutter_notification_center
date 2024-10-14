@@ -17,8 +17,9 @@
   - [Translations](#translations)
 - [API Reference](#api-reference)
 - [Examples](#examples)
-- [Contributing](#contributing)
-- [License](#license)
+- [Issues](#issues)
+- [Contributing](#contribute)
+- [Author](#author)
 
 ---
 
@@ -301,7 +302,7 @@ See [Example Code](example/lib/main.dart) for more info.
 
 Please file any issues, bugs or feature request as an issue on our [GitHub](https://github.com/Iconica-Development/flutter_notification_center/pulls) page. Commercial support is available if you need help with integration with your app or services. You can contact us at [support@iconica.nl](mailto:support@iconica.nl).
 
-## Want to contribute
+## Contribute
 
 If you would like to contribute to the plugin (e.g. by improving the documentation, solving a bug or adding a cool new feature), please carefully review our [contribution guide](./CONTRIBUTING.md) and send us your [pull request](https://github.com/Iconica-Development/flutter_notification_center/pulls).
 
