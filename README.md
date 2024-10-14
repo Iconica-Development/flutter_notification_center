@@ -277,7 +277,7 @@ firebaseRepo.getNotifications("user_123").listen((notifications) {
 ```
 
 ---
-### Advaned Usage With Custom Translations
+### Advanced Usage With Custom Translations
 ```dart
 final translations = NotificationTranslations(
   appBarTitle: "My Custom Notifications",
