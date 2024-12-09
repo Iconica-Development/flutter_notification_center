@@ -33,7 +33,7 @@ dependencies:
   firebase_notification_center_repository:
     path: ../../firebase_notification_center_repository
   
-  intl: ^0.19.0
+  intl: ^0.20.1
 
   firebase_auth: any
   firebase_core: any
