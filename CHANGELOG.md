@@ -1,3 +1,7 @@
+## [5.1.0] - 13 February 2025
+
+* Update intl to 0.20.1
+
 ## [5.0.0] - 24 September 2024
 
 * Refactor package with the new component structure
