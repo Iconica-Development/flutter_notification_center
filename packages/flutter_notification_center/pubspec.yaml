@@ -16,21 +16,17 @@ dependencies:
   flutter_svg: ^2.0.10+1
 
   flutter_animated_widgets:
-    git:
-      url: https://github.com/Iconica-Development/flutter_animated_widgets
-      ref: 0.3.1
+    hosted: https://forgejo.internal.iconica.nl/api/packages/internal/pub
+    version: ^0.3.1
   
   notification_center_repository_interface:
-    git:
-      url: https://github.com/Iconica-Development/flutter_notification_center.git
-      path: packages/notification_center_repository_interface
-      ref: 5.1.0
+    hosted: https://forgejo.internal.iconica.nl/api/packages/internal/pub
+    version: ^5.1.0
 
 dev_dependencies:
   flutter_iconica_analysis:
-    git:
-      url: https://github.com/Iconica-Development/flutter_iconica_analysis
-      ref: 7.0.0
+    hosted: https://forgejo.internal.iconica.nl/api/packages/internal/pub
+    version: ^7.0.0
 
 flutter:
   assets:

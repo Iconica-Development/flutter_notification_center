@@ -10,11 +10,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  
+
   rxdart: any
 
 dev_dependencies:
   flutter_iconica_analysis:
-    git:
-      url: https://github.com/Iconica-Development/flutter_iconica_analysis
-      ref: 7.0.0
+    hosted: https://forgejo.internal.iconica.nl/api/packages/internal/pub
+    version: ^7.0.0
