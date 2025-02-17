@@ -57,3 +57,6 @@ flutter_notification_center.iml
 dotenv
 firebase_options.dart
 pubspec_overrides.yaml
+
+# FVM Version Cache
+.fvm/

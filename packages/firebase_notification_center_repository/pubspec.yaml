@@ -1,8 +1,9 @@
 name: firebase_notification_center_repository
 description: "A new Flutter package project."
 version: 5.1.0
-homepage:
-publish_to: 'none'
+repository: https://github.com/Iconica-Development/flutter_notification_center
+
+publish_to: https://forgejo.internal.iconica.nl/api/packages/internal/pub
 
 environment:
   sdk: ^3.5.3
