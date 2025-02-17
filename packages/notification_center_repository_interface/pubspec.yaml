@@ -1,7 +1,9 @@
 name: notification_center_repository_interface
 description: "A new Flutter package project."
 version: 5.1.0
-homepage:
+repository: https://github.com/Iconica-Development/flutter_notification_center
+
+publish_to: https://forgejo.internal.iconica.nl/api/packages/internal/pub
 
 environment:
   sdk: ^3.5.3
@@ -11,7 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  rxdart: any
+  rxdart: ^0.28.0
 
 dev_dependencies:
   flutter_iconica_analysis:
