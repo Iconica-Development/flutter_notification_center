@@ -26,7 +26,7 @@ dependencies:
 dev_dependencies:
   flutter_iconica_analysis:
     hosted: https://forgejo.internal.iconica.nl/api/packages/internal/pub
-    version: ^7.0.0
+    version: ^8.0.0
 
 flutter:
   assets:
